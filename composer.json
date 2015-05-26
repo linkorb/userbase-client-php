@@ -1,0 +1,23 @@
+{
+    "name": "userbase/client",
+    "description": "UserBase PHP Client: Identity + Login + Signup Service",
+    "homepage": "http://www.github.com/userbase-project/userbase-client-php",
+    "keywords": ["login", "signup", "user", "account"],
+    "type": "library",
+    "authors": [
+        {
+            "name": "Joost Faassen",
+            "email": "j.faassen@linkorb.com",
+            "role": "Development"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/security": "~2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserBase\\Client\\": "src/"
+        } 
+    }
+}

@@ -6,7 +6,8 @@ use UserBase\Client\User;
 use RuntimeException;
 
 if (!function_exists('curl_file_create')) {
-    function curl_file_create($filename, $mimetype = '', $postname = '') {
+    function curl_file_create($filename, $mimetype = '', $postname = '')
+    {
         return "@$filename;filename="
             . ($postname ?: basename($filename))
             . ($mimetype ? ";type=$mimetype" : '');
@@ -25,13 +26,13 @@ class Client
         $this->username = $username;
         $this->password = $password;
     }
-    
+
     private function getStatusCode($ch)
     {
         $info = curl_getinfo($ch);
         return (int)$info['http_code'];
     }
-    
+
     public function getUserByUsername($username)
     {
         $data = $this->getData('/users/' . $username);
@@ -44,14 +45,13 @@ class Client
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
         $user->setPasswordUpdatedAt($data['passwordupdated_at']);
-        
-        print_r($userdata);
+
         return $user;
     }
-    
+
     public function getData($uri)
     {
-        
+
         $url =  $this->baseUrl . $uri;
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

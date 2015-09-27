@@ -245,7 +245,6 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     
     public function addRole($roleName)
     {
-        $role = new Role($roleName);
-        $this->roles[] = $role;
+        $this->roles[] = $roleName;
     }
 }

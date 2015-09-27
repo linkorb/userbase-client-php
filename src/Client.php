@@ -71,7 +71,7 @@ class Client
             foreach ($policyData['action'] as $action) {
                 $policy->addAction($action);
                 if ($policy->getEffect() == 'allow') {
-                    $roleName = 'xrn:' . $this->partition . ':userbase::account/' . $account->getName();
+                    $roleName = 'ROLE_' . $policy->getResource();
                     $roleName .= '@' . $action;
                     $user->addRole($roleName);
                 }

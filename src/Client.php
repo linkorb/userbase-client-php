@@ -2,7 +2,9 @@
 
 namespace UserBase\Client;
 
-use UserBase\Client\User;
+use UserBase\Client\Model\User;
+use UserBase\Client\Model\Account;
+use UserBase\Client\Model\Policy;
 use RuntimeException;
 
 if (!function_exists('curl_file_create')) {
@@ -19,12 +21,14 @@ class Client
     protected $baseUrl;
     protected $username;
     protected $password;
+    protected $partition;
 
-    public function __construct($baseUrl, $username, $password)
+    public function __construct($baseUrl, $username, $password, $partition = 'dev')
     {
         $this->baseUrl = $baseUrl;
         $this->username = $username;
         $this->password = $password;
+        $this->partition = $partition;
     }
 
     private function getStatusCode($ch)
@@ -35,6 +39,7 @@ class Client
 
     public function getUserByUsername($username)
     {
+        
         $data = $this->getData('/users/' . $username);
         $user = new User($data['username']);
         $user->setUsername($data['username']);
@@ -45,6 +50,34 @@ class Client
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
         $user->setPasswordUpdatedAt($data['passwordupdated_at']);
+        foreach ($data['accounts'] as $accountData) {
+            $account = new Account();
+            $account->setName($accountData['name']);
+            $account->setDisplayName($accountData['display_name']);
+            $account->setAbout($accountData['about']);
+            $account->setPictureUrl($accountData['picture_url']);
+            $account->setEmail($accountData['email']);
+            $account->setCreatedAt($accountData['created_at']);
+            $account->setDeletedAt($accountData['deleted_at']);
+            $account->setAccountType($accountData['account_type']);
+            
+            $user->addAccount($account);
+        }
+
+        foreach ($data['policies'] as $policyData) {
+            $policy = new Policy();
+            $policy->setEffect($policyData['effect']);
+            $policy->setResource($policyData['resource']);
+            foreach ($policyData['action'] as $action) {
+                $policy->addAction($action);
+                if ($policy->getEffect() == 'allow') {
+                    $roleName = 'xrn:' . $this->partition . ':userbase::account/' . $account->getName();
+                    $roleName .= '@' . $action;
+                    $user->addRole($roleName);
+                }
+            }
+            $user->addPolicy($policy);
+        }
 
         return $user;
     }

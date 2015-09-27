@@ -1,10 +1,11 @@
 <?php
 
-namespace UserBase\Client;
+namespace UserBase\Client\Model;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
-final class User implements AdvancedUserInterface
+final class User implements UserInterface, AdvancedUserInterface, AccountContainerInterface, PolicyContainerInterface
 {
     private $password;
     private $email;
@@ -20,6 +21,9 @@ final class User implements AdvancedUserInterface
     private $passwordUpdatedAt;
     private $lastSeenAt;
     private $deletedAt;
+    
+    private $accounts = array();
+    private $policies = array();
 
     public function __construct($name)
     {
@@ -200,4 +204,48 @@ final class User implements AdvancedUserInterface
         $this->pictureUrl = $url;
     }
 
+    public function addAccount(Account $account)
+    {
+        $this->accounts[$account->getName()] = $account;
+    }
+    
+    public function getAccounts()
+    {
+        return $this->accounts;
+    }
+    
+    public function getUserAccount()
+    {
+        if (!$this->accounts[$this->name]) {
+            throw new RuntimeException("This user has no user-account");
+        }
+        return $this->accounts[$this->name];
+    }
+    
+    public function getAccountsByType($type)
+    {
+        $res = array();
+        foreach ($this->accounts as $account) {
+            if ($account->getAccountType() == $type) {
+                $res[] = $account;
+            }
+        }
+        return $res;
+    }
+    
+    public function addPolicy(Policy $policy)
+    {
+        $this->policies[] = $policy;
+    }
+    
+    public function getPolicies()
+    {
+        return $this->policies;
+    }
+    
+    public function addRole($roleName)
+    {
+        $role = new Role($roleName);
+        $this->roles[] = $role;
+    }
 }

@@ -36,6 +36,21 @@ class Client
         $info = curl_getinfo($ch);
         return (int)$info['http_code'];
     }
+    
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+    
+    public function getPartition()
+    {
+        return $this->partition;
+    }
+    
+    public function getUsername()
+    {
+        return $this->username;
+    }
 
     public function getUserByUsername($username)
     {

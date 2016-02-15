@@ -150,6 +150,6 @@ class Account
     
     public function hasAccountProperty($name)
     {
-        return isset($this->accountProperty[$name]);
+        return isset($this->accountProperties[$name]);
     }
 }

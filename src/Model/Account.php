@@ -129,4 +129,27 @@ class Account
         }
         return false;
     }
+    
+    private $accountProperties = array();
+    
+    public function addAccountProperty(AccountProperty $accountProperty)
+    {
+        $this->accountProperties[$accountProperty->getName()] = $accountProperty;
+        return $this;
+    }
+    
+    public function getAccountProperties()
+    {
+        return $this->accountProperties;
+    }
+    
+    public function getAccountProperty($name)
+    {
+        return $this->accountProperties[$name];
+    }
+    
+    public function hasAccountProperty($name)
+    {
+        return isset($this->accountProperty[$name]);
+    }
 }

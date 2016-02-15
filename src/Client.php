@@ -5,6 +5,7 @@ namespace UserBase\Client;
 use UserBase\Client\Model\User;
 use UserBase\Client\Model\Account;
 use UserBase\Client\Model\AccountUser;
+use UserBase\Client\Model\AccountProperty;
 use UserBase\Client\Model\Policy;
 use RuntimeException;
 
@@ -129,6 +130,17 @@ class Client
                 $account->addAccountUser($accountUser);
             }
         }
+
+        if (isset($data['properties'])) {
+            foreach ($data['properties'] as $accountPropertyData) {
+                $accountProperty = new AccountProperty();
+                $accountProperty->setAccountName($account->getName());
+                $accountProperty->setName($accountPropertyData['name']);
+                $accountProperty->setValue($accountPropertyData['value']);
+                $account->addAccountProperty($accountProperty);
+            }
+        }
+
         return $account;
     }
     

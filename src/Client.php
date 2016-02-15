@@ -4,6 +4,7 @@ namespace UserBase\Client;
 
 use UserBase\Client\Model\User;
 use UserBase\Client\Model\Account;
+use UserBase\Client\Model\AccountUser;
 use UserBase\Client\Model\Policy;
 use RuntimeException;
 
@@ -52,10 +53,19 @@ class Client
         return $this->username;
     }
 
-    public function getUserByUsername($username)
+    public function getUsersWithDetails()
     {
-        
-        $data = $this->getData('/users/' . $username);
+        $data = $this->getData('/users?details');
+        $users = array();
+        foreach ($data['items'] as $item) {
+            $user = $this->itemToUser($item);
+            $users[] = $user;
+        }
+        return $users;
+    }
+    
+    protected function itemToUser($data)
+    {
         $user = new User($data['username']);
         $user->setUsername($data['username']);
         $user->setDisplayName($data['display_name']);
@@ -65,36 +75,88 @@ class Client
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
         $user->setPasswordUpdatedAt($data['passwordupdated_at']);
-        foreach ($data['accounts'] as $accountData) {
-            $account = new Account();
-            $account->setName($accountData['name']);
-            $account->setDisplayName($accountData['display_name']);
-            $account->setAbout($accountData['about']);
-            $account->setPictureUrl($accountData['picture_url']);
-            $account->setEmail($accountData['email']);
-            $account->setCreatedAt($accountData['created_at']);
-            $account->setDeletedAt($accountData['deleted_at']);
-            $account->setAccountType($accountData['account_type']);
-            
-            $user->addAccount($account);
-        }
-
-        foreach ($data['policies'] as $policyData) {
-            $policy = new Policy();
-            $policy->setEffect($policyData['effect']);
-            $policy->setResource($policyData['resource']);
-            foreach ($policyData['action'] as $action) {
-                $policy->addAction($action);
-                if ($policy->getEffect() == 'allow') {
-                    $roleName = 'ROLE_' . $policy->getResource();
-                    $roleName .= '@' . $action;
-                    $user->addRole($roleName);
-                }
+        if (isset($data['accounts'])) {
+            foreach ($data['accounts'] as $accountData) {
+                $accountUser = new AccountUser();
+                $accountUser->setUserName($user->getName());
+                $accountUser->setAccountName($accountData['name']);
+                $account = $this->itemToAccount($accountData);
+                $accountUser->setAccount($account);
+                $user->addAccountUser($accountUser);
             }
-            $user->addPolicy($policy);
         }
 
+        if (isset($data['policies'])) {
+            foreach ($data['policies'] as $policyData) {
+                $policy = new Policy();
+                $policy->setEffect($policyData['effect']);
+                $policy->setResource($policyData['resource']);
+                foreach ($policyData['action'] as $action) {
+                    $policy->addAction($action);
+                    if ($policy->getEffect() == 'allow') {
+                        $roleName = 'ROLE_' . $policy->getResource();
+                        $roleName .= '@' . $action;
+                        $user->addRole($roleName);
+                    }
+                }
+                $user->addPolicy($policy);
+            }
+        }
         return $user;
+    }
+    
+    protected function itemToAccount($data)
+    {
+        $account = new Account($data['name']);
+        $account->setDisplayName($data['display_name']);
+        $account->setAbout($data['about']);
+        $account->setEmail($data['email']);
+        if (isset($data['type'])) {
+            $account->setAccountType($data['type']);
+        }
+        if (isset($data['account_type'])) {
+            $account->setAccountType($data['account_type']);
+        }
+        $account->setPictureUrl($data['picture_url']);
+        $account->setCreatedAt($data['created_at']);
+        $account->setDeletedAt($data['deleted_at']);
+        if (isset($data['members'])) {
+            foreach ($data['members'] as $accountUserData) {
+                $accountUser = new AccountUser();
+                $accountUser->setAccountName($account->getName());
+                $accountUser->setUsername($accountUserData['user_name']);
+                $accountUser->setIsOwner($accountUserData['is_owner']);
+                $account->addAccountUser($accountUser);
+            }
+        }
+        return $account;
+    }
+    
+    public function getUserByUsername($username)
+    {
+        
+        $data = $this->getData('/users/' . $username);
+        $user = $this->itemToUser($data);
+        return $user;
+    }
+    
+    public function getAccountByName($name)
+    {
+        $data = $this->getData('/accounts/' . $name);
+        $account = $this->itemToAccount($data);
+        return $account;
+    }
+    
+    public function getAccountsWithDetails()
+    {
+        $data = $this->getData('/accounts?details');
+        $users = array();
+        foreach ($data['items'] as $item) {
+            $user = $this->itemToAccount($item);
+            $users[] = $user;
+        }
+        return $users;
+        //print_r($data);
     }
 
     public function getData($uri)

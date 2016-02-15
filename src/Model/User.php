@@ -22,7 +22,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     private $lastSeenAt;
     private $deletedAt;
     
-    private $accounts = array();
+    private $accountUsers = array();
     private $policies = array();
 
     public function __construct($name)
@@ -204,28 +204,39 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         $this->pictureUrl = $url;
     }
 
-    public function addAccount(Account $account)
+    public function addAccountUser(AccountUser $accountUser)
     {
-        $this->accounts[$account->getName()] = $account;
+        $this->accountUsers[] = $accountUser;
+    }
+    
+    public function getAccountUsers()
+    {
+        return $this->accountUsers;
     }
     
     public function getAccounts()
     {
-        return $this->accounts;
+        $accounts = array();
+        foreach ($this->accountUsers as $accountUser) {
+            $accounts[] = $accountUser->getAccount();
+        }
+        return $accounts;
     }
     
     public function getUserAccount()
     {
-        if (!$this->accounts[$this->name]) {
-            throw new RuntimeException("This user has no user-account");
+        foreach ($this->getAccounts() as $account) {
+            if ($account->getName()==$this->name) {
+                return $account;
+            }
         }
-        return $this->accounts[$this->name];
+        throw new RuntimeException("This user has no user-account");
     }
     
     public function getAccountsByType($type)
     {
         $res = array();
-        foreach ($this->accounts as $account) {
+        foreach ($this->getAccounts() as $account) {
             if ($account->getAccountType() == $type) {
                 $res[] = $account;
             }

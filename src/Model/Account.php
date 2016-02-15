@@ -13,6 +13,11 @@ class Account
     private $deletedAt;
     private $accountType;
     
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+    
     public function getName()
     {
         return $this->name;
@@ -102,7 +107,26 @@ class Account
         return $this;
     }
     
+    private $accountUsers = array();
     
+    public function addAccountUser(AccountUser $accountUser)
+    {
+        $this->accountUsers[] = $accountUser;
+        return $this;
+    }
     
+    public function getAccountUsers()
+    {
+        return $this->accountUsers;
+    }
+    
+    public function isAccountUser($userName)
+    {
+        foreach ($this->accountUser as $accountUser) {
+            if ($this->accountUser->getUserName()==$userName) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
-    

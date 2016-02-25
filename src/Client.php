@@ -190,4 +190,16 @@ class Client
 
         return $data;
     }
+    
+    public function checkCredentials($username, $password)
+    {
+        try {
+            $user = $this->getUserByUsername($username);
+        } catch (\Exception $e) {
+            return false;
+        }
+        $encoder = new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder();
+        $valid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
+        return $valid;
+    }
 }

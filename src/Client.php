@@ -112,6 +112,7 @@ class Client
         $account->setDisplayName($data['display_name']);
         $account->setAbout($data['about']);
         $account->setEmail($data['email']);
+        $account->setMobile($data['mobile']);
         if (isset($data['type'])) {
             $account->setAccountType($data['type']);
         }

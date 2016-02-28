@@ -9,6 +9,7 @@ class Account
     private $about;
     private $pictureUrl;
     private $email;
+    private $mobile;
     private $createdAt;
     private $deletedAt;
     private $accountType;
@@ -73,6 +74,18 @@ class Account
         $this->email = $email;
         return $this;
     }
+    
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+    
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
+        return $this;
+    }
+    
     
     public function getCreatedAt()
     {

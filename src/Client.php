@@ -38,17 +38,17 @@ class Client
         $info = curl_getinfo($ch);
         return (int)$info['http_code'];
     }
-    
+
     public function getBaseUrl()
     {
         return $this->baseUrl;
     }
-    
+
     public function getPartition()
     {
         return $this->partition;
     }
-    
+
     public function getUsername()
     {
         return $this->username;
@@ -64,7 +64,7 @@ class Client
         }
         return $users;
     }
-    
+
     protected function itemToUser($data)
     {
         $user = new User($data['username']);
@@ -105,14 +105,14 @@ class Client
         }
         return $user;
     }
-    
+
     protected function itemToAccount($data)
     {
         $account = new Account($data['name']);
         $account->setDisplayName($data['display_name']);
         $account->setAbout($data['about']);
         $account->setEmail($data['email']);
-        if (isset($data['mobile']) {
+        if (isset($data['mobile'])) {
             $account->setMobile($data['mobile']);
         }
         if (isset($data['type'])) {
@@ -146,22 +146,22 @@ class Client
 
         return $account;
     }
-    
+
     public function getUserByUsername($username)
     {
-        
+
         $data = $this->getData('/users/' . $username);
         $user = $this->itemToUser($data);
         return $user;
     }
-    
+
     public function getAccountByName($name)
     {
         $data = $this->getData('/accounts/' . $name);
         $account = $this->itemToAccount($data);
         return $account;
     }
-    
+
     public function getAccountsWithDetails()
     {
         $data = $this->getData('/accounts?details');
@@ -193,7 +193,7 @@ class Client
 
         return $data;
     }
-    
+
     public function checkCredentials($username, $password)
     {
         try {

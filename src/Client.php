@@ -208,7 +208,13 @@ class Client
 
     public function setAccountProperty($accountName, $propertyName, $propertyValue)
     {
-        $data = $this->getData('/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
+        $data = $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
+        return $data;
+    }
+
+    public function addAccountUser($accountName, $userName, $isAdmin)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);
         return $data;
     }
 }

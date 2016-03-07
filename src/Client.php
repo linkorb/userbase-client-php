@@ -208,10 +208,7 @@ class Client
 
     public function setAccountProperty($accountName, $propertyName, $propertyValue)
     {
-        $accountProperty = new AccountProperty();
-        $accountProperty->setAccountName($accountName);
-        $accountProperty->setName($propertyName);
-        $accountProperty->setValue($propertyValue);
-        $account->addAccountProperty($accountProperty);
+        $data = $this->getData('/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
+        return $data;
     }
 }

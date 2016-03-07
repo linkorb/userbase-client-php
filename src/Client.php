@@ -205,4 +205,13 @@ class Client
         $valid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
         return $valid;
     }
+
+    public function setAccountProperty($accountName, $propertyName, $propertyValue)
+    {
+        $accountProperty = new AccountProperty();
+        $accountProperty->setAccountName($accountName);
+        $accountProperty->setName($propertyName);
+        $accountProperty->setValue($propertyValue);
+        $account->addAccountProperty($accountProperty);
+    }
 }

@@ -217,4 +217,11 @@ class Client
         $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);
         return $data;
     }
+
+    public function addEvent($accountName, $eventName, $data)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/addEvent/'.urlencode($eventName).'?'.$data);
+        return $data;
+
+    }
 }

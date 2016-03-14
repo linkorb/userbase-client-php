@@ -224,4 +224,18 @@ class Client
         return $data;
 
     }
+
+    public function createAccount($accountName, $accountType)
+    {
+        $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode($accountType));
+        return $data;
+    }
+
+    public function updateAccount($accountName, $displayName, $email, $mobile, $about)
+    {
+        //die('/accounts/'.$accountName.'/update/'.$displayName.'/'.$email.'/'.$mobile.'/'.$about);
+        $data = $this->getData('/accounts/'.$accountName.'/update/'.
+                urlencode($displayName).'/'.urlencode($email).'/'.urlencode($mobile).'/'.urlencode($about));
+        return $data;
+    }
 }

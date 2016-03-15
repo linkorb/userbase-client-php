@@ -174,13 +174,18 @@ class Client
         //print_r($data);
     }
 
-    public function getData($uri)
+    public function getData($uri, $jsonData = null)
     {
-
         $url =  $this->baseUrl . $uri;
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
+
+        if ($jsonData) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        }
 
         $json = curl_exec($ch);
         $info = curl_getinfo($ch);
@@ -236,6 +241,18 @@ class Client
         //die('/accounts/'.$accountName.'/update/'.$displayName.'/'.$email.'/'.$mobile.'/'.$about);
         $data = $this->getData('/accounts/'.$accountName.'/update/'.
                 urlencode($displayName).'/'.urlencode($email).'/'.urlencode($mobile).'/'.urlencode($about));
+        return $data;
+    }
+
+    public function createNotification($accountName, $jsonData = null)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/notifications/add', $jsonData);
+        return $data;
+    }
+
+    public function getNotifications($accountName, $jsonData)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/notifications', $jsonData);
         return $data;
     }
 }

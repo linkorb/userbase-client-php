@@ -56,17 +56,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     {
         $this->deletedAt = $deletedAt;
     }
-    
-    public function getPasswordUpdatedAt()
-    {
-        return $this->passwordUpdatedAt;
-    }
-    
-    public function setPasswordUpdatedAt($passwordUpdatedAt)
-    {
-        $this->passwordUpdatedAt = $passwordUpdatedAt;
-    }
-    
+        
     public function getLastSeenAt()
     {
         return $this->lastSeenAt;

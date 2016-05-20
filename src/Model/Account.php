@@ -165,4 +165,30 @@ class Account
     {
         return isset($this->accountProperties[$name]);
     }
+
+    private $message;
+    private $expireAt;
+    
+    
+    public function getMessage()
+    {
+        return $this->message;
+    }
+    
+    public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+    
+    public function getExpireAt()
+    {
+        return $this->expireAt;
+    }
+    
+    public function setExpireAt($expireAt)
+    {
+        $this->expireAt = $expireAt;
+        return $this;
+    }
 }

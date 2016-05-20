@@ -69,13 +69,9 @@ class Client
     {
         $user = new User($data['username']);
         $user->setUsername($data['username']);
-        $user->setDisplayName($data['display_name']);
-        $user->setEmail($data['email']);
-        $user->setPictureUrl($data['picture_url']);
         $user->setPassword($data['password']);
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
-        $user->setPasswordUpdatedAt($data['passwordupdated_at']);
         if (isset($data['accounts'])) {
             foreach ($data['accounts'] as $accountData) {
                 $accountUser = new AccountUser();
@@ -111,8 +107,9 @@ class Client
         $account = new Account($data['name']);
         $account->setDisplayName($data['display_name']);
         $account->setAbout($data['about']);
+        $account->setUrl($data['url']);
         $account->setEmail($data['email']);
-        if (isset($data['mobile']) {
+        if (isset($data['mobile'])) {
             $account->setMobile($data['mobile']);
         }
         if (isset($data['type'])) {
@@ -124,6 +121,8 @@ class Client
         $account->setPictureUrl($data['picture_url']);
         $account->setCreatedAt($data['created_at']);
         $account->setDeletedAt($data['deleted_at']);
+        $account->setMessage($data['message']);
+        $account->setExpireAt($data['expire_at']);
         if (isset($data['members'])) {
             foreach ($data['members'] as $accountUserData) {
                 $accountUser = new AccountUser();
@@ -151,6 +150,9 @@ class Client
     {
         
         $data = $this->getData('/users/' . $username);
+        if (isset($data['error'])) {
+            throw new RuntimeException('User not found: ' . $username);
+        }
         $user = $this->itemToUser($data);
         return $user;
     }
@@ -171,7 +173,6 @@ class Client
             $users[] = $user;
         }
         return $users;
-        //print_r($data);
     }
 
     public function getData($uri)

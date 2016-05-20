@@ -33,7 +33,10 @@ class Account
     
     public function getDisplayName()
     {
-        return $this->displayName;
+        if ($this->displayName) {
+            return $this->displayName;
+        }
+        return $this->name;
     }
     
     public function setDisplayName($displayName)

@@ -38,17 +38,17 @@ class Client
         $info = curl_getinfo($ch);
         return (int)$info['http_code'];
     }
-    
+
     public function getBaseUrl()
     {
         return $this->baseUrl;
     }
-    
+
     public function getPartition()
     {
         return $this->partition;
     }
-    
+
     public function getUsername()
     {
         return $this->username;
@@ -64,7 +64,7 @@ class Client
         }
         return $users;
     }
-    
+
     protected function itemToUser($data)
     {
         $user = new User($data['username']);
@@ -101,7 +101,7 @@ class Client
         }
         return $user;
     }
-    
+
     protected function itemToAccount($data)
     {
         $account = new Account($data['name']);
@@ -145,10 +145,10 @@ class Client
 
         return $account;
     }
-    
+
     public function getUserByUsername($username)
     {
-        
+
         $data = $this->getData('/users/' . $username);
         if (isset($data['error'])) {
             throw new RuntimeException('User not found: ' . $username);
@@ -156,14 +156,14 @@ class Client
         $user = $this->itemToUser($data);
         return $user;
     }
-    
+
     public function getAccountByName($name)
     {
         $data = $this->getData('/accounts/' . $name);
         $account = $this->itemToAccount($data);
         return $account;
     }
-    
+
     public function getAccountsWithDetails()
     {
         $data = $this->getData('/accounts?details');
@@ -175,13 +175,18 @@ class Client
         return $users;
     }
 
-    public function getData($uri)
+    public function getData($uri, $jsonData = null)
     {
-
         $url =  $this->baseUrl . $uri;
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
+
+        if ($jsonData) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        }
 
         $json = curl_exec($ch);
         $info = curl_getinfo($ch);
@@ -194,7 +199,7 @@ class Client
 
         return $data;
     }
-    
+
     public function checkCredentials($username, $password)
     {
         try {
@@ -205,5 +210,50 @@ class Client
         $encoder = new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder();
         $valid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
         return $valid;
+    }
+
+    public function setAccountProperty($accountName, $propertyName, $propertyValue)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
+        return $data;
+    }
+
+    public function addAccountUser($accountName, $userName, $isAdmin)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);
+        return $data;
+    }
+
+    public function addEvent($accountName, $eventName, $data)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/addEvent/'.urlencode($eventName).'?'.$data);
+        return $data;
+
+    }
+
+    public function createAccount($accountName, $accountType)
+    {
+        $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode($accountType));
+        return $data;
+    }
+
+    public function updateAccount($accountName, $displayName, $email, $mobile, $about)
+    {
+        //die('/accounts/'.$accountName.'/update/'.$displayName.'/'.$email.'/'.$mobile.'/'.$about);
+        $data = $this->getData('/accounts/'.$accountName.'/update/'.
+                urlencode($displayName).'/'.urlencode($email).'/'.urlencode($mobile).'/'.urlencode($about));
+        return $data;
+    }
+
+    public function createNotification($accountName, $jsonData = null)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/notifications/add', $jsonData);
+        return $data;
+    }
+
+    public function getNotifications($accountName, $jsonData)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/notifications', $jsonData);
+        return $data;
     }
 }

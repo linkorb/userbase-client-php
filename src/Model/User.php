@@ -8,17 +8,13 @@ use Symfony\Component\Security\Core\Role\Role;
 final class User implements UserInterface, AdvancedUserInterface, AccountContainerInterface, PolicyContainerInterface
 {
     private $password;
-    private $email;
     private $enabled;
     private $accountNonExpired;
     private $credentialsNonExpired;
     private $accountNonLocked;
     private $roles;
-    private $displayName;
     
     private $createdAt;
-    private $emailVerifiedAt;
-    private $passwordUpdatedAt;
     private $lastSeenAt;
     private $deletedAt;
     
@@ -132,17 +128,10 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     
     public function getDisplayName()
     {
-        if ($this->displayName) {
-            return $this->displayName;
-        }
-        return $this->name;
+        $account = $this->getUserAccount();
+        return $account->getDisplayName();
     }
     
-    public function setDisplayName($name)
-    {
-        $this->displayName = $name;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -182,26 +171,14 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     {
     }
     
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-    
     public function getEmail()
     {
-        return $this->email;
+        return $this->getUserAccount()->getEmail();
     }
-    
-    private $pictureUrl;
     
     public function getPictureUrl($size = null)
     {
-        return $this->pictureUrl;
-    }
-    
-    public function setPictureUrl($url)
-    {
-        $this->pictureUrl = $url;
+        return $this->getUserAccount()->getPictureUrl($size);
     }
 
     public function addAccountUser(AccountUser $accountUser)
@@ -226,11 +203,11 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function getUserAccount()
     {
         foreach ($this->getAccounts() as $account) {
-            if ($account->getName()==$this->name) {
+            if ($account->getName() == $this->getName()) {
                 return $account;
             }
         }
-        throw new RuntimeException("This user has no user-account");
+        throw new RuntimeException("This user has no user-account: " . $this->getName());
     }
     
     public function getAccountsByType($type)

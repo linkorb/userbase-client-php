@@ -9,7 +9,11 @@ if (count($argv)!=2) {
 try {
     $username = $argv[1];
     $user = $client->getUserByUsername($username);
-    print_r($user);
+    echo "Username: " . $user->getName() . "\n";
+    echo "DisplayName: " . $user->getDisplayName() . "\n";
+    echo "Email: " . $user->getEmail() . "\n";
+    echo "PictureUrl: " . $user->getPictureUrl() . "\n";
+    
     foreach ($user->getAccounts() as $account) {
         echo " * Account: " . $account->getName() . "\n";
     }

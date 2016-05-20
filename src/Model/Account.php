@@ -13,6 +13,7 @@ class Account
     private $createdAt;
     private $deletedAt;
     private $accountType;
+    private $url;
     
     public function __construct($name)
     {
@@ -191,4 +192,16 @@ class Account
         $this->expireAt = $expireAt;
         return $this;
     }
+    
+    public function getUrl()
+    {
+        return $this->url;
+    }
+    
+    public function setUrl($url)
+    {
+        $this->url = $url;
+        return $this;
+    }
+    
 }

@@ -4,6 +4,7 @@ namespace UserBase\Client\Model;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\Role\Role;
+use RuntimeException;
 
 final class User implements UserInterface, AdvancedUserInterface, AccountContainerInterface, PolicyContainerInterface
 {

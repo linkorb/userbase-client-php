@@ -150,6 +150,7 @@ class Client
     {
 
         $data = $this->getData('/users/' . $username);
+    
         if (isset($data['error'])) {
             throw new RuntimeException('User not found: ' . $username);
         }
@@ -237,7 +238,10 @@ class Client
     public function createAccount($accountName, $accountType)
     {
         $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode($accountType));
-        return $data;
+        if (isset($data['error'])) {
+            throw new RuntimeException($data['error']['code'] . ': ' . $data['error']['message']);
+        }
+        return true;
     }
 
     public function updateAccount($accountName, $displayName, $email, $mobile, $about)

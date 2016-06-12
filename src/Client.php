@@ -225,7 +225,10 @@ class Client
     public function addAccountUser($accountName, $userName, $isAdmin)
     {
         $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);
-        return $data;
+        if ($data['status'] != 'ok') {
+            throw new RuntimeException("Failed to add user to account");
+        }
+        return true;
     }
 
     public function addEvent($accountName, $eventName, $data)

@@ -247,11 +247,14 @@ class Client
         return true;
     }
 
-    public function updateAccount($accountName, $displayName, $email, $mobile, $about)
+    public function updateAccount($accountName, $properties)
     {
-        //die('/accounts/'.$accountName.'/update/'.$displayName.'/'.$email.'/'.$mobile.'/'.$about);
-        $data = $this->getData('/accounts/'.$accountName.'/update/'.
-                urlencode($displayName).'/'.urlencode($email).'/'.urlencode($mobile).'/'.urlencode($about));
+        $url = '/accounts/'.$accountName.'/update?x=1';
+        foreach ($properties as $key => $value) {
+            $url .= '&' . $key . '=' . urlencode($value);
+        }
+        //echo $url; exit();
+        $data = $this->getData($url);
         return $data;
     }
 

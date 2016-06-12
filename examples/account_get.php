@@ -10,7 +10,11 @@ if (count($argv)!=2) {
 try {
     $accountName = $argv[1];
     $account = $client->getAccountByName($accountName);
-    print_r($account);
+    if (!$account) {
+        echo "No such account\n";
+    } else {
+        print_r($account);
+    }
 } catch (Exception $e) {
     echo "Exception " . $e->getMessage() . "\n";
 }

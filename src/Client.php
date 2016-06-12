@@ -160,6 +160,9 @@ class Client
     public function getAccountByName($name)
     {
         $data = $this->getData('/accounts/' . $name);
+        if (!isset($data['name'])) {
+            return false;
+        }
         $account = $this->itemToAccount($data);
         return $account;
     }

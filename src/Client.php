@@ -221,6 +221,12 @@ class Client
         $data = $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
         return $data;
     }
+    
+    public function setAccountPicture($accountName, $filename)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/setPicture');
+        return $data;
+    }
 
     public function addAccountUser($accountName, $userName, $isAdmin)
     {

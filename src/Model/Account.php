@@ -9,7 +9,11 @@ class Account
     private $about;
     private $pictureUrl;
     private $email;
+    private $email_verified;
     private $mobile;
+    private $mobile_verified;
+    private $status;
+    
     private $createdAt;
     private $deletedAt;
     private $accountType;
@@ -79,6 +83,18 @@ class Account
         return $this;
     }
     
+    public function getEmailVerified()
+    {
+        return $this->email_verified;
+    }
+    
+    public function setEmailVerified($email_verified)
+    {
+        $this->email_verified = $email_verified;
+        return $this;
+    }
+    
+    
     public function getMobile()
     {
         return $this->mobile;
@@ -90,6 +106,28 @@ class Account
         return $this;
     }
     
+    public function getMobileVerified()
+    {
+        return $this->mobile_verified;
+    }
+    
+    public function setMobileVerified($mobile_verified)
+    {
+        $this->mobile_verified = $mobile_verified;
+        return $this;
+    }
+    
+    
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
     
     public function getCreatedAt()
     {
@@ -206,5 +244,4 @@ class Account
         $this->url = $url;
         return $this;
     }
-    
 }

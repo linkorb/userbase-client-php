@@ -109,9 +109,11 @@ class Client
         $account->setAbout($data['about']);
         $account->setUrl($data['url']);
         $account->setEmail($data['email']);
-        if (isset($data['mobile'])) {
-            $account->setMobile($data['mobile']);
-        }
+        $account->setEmailVerified($data['email_verified']);
+        $account->setMobile($data['mobile']);
+        $account->setMobileVerified($data['mobile_verified']);
+        $account->setStatus($data['status']);
+
         if (isset($data['type'])) {
             $account->setAccountType($data['type']);
         }

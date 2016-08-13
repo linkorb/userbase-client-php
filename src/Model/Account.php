@@ -2,6 +2,8 @@
 
 namespace UserBase\Client\Model;
 
+use InvalidArgumentException;
+
 class Account
 {
     private $name;
@@ -180,6 +182,35 @@ class Account
         foreach ($this->accountUser as $accountUser) {
             if ($this->accountUser->getUserName()==$userName) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+
+    private $accountEmails = array();
+    
+    public function addAccountEmail(AccountEmail $accountEmail)
+    {
+        $this->accountEmails[] = $accountEmail;
+        return $this;
+    }
+    
+    public function getAccountEmails()
+    {
+        return $this->accountEmails;
+    }
+    
+    public function hasVerifiedEmailDomain($emailDomain)
+    {
+        if ($emailDomain[0]!='@') {
+            throw new InvalidArgumentException('Make sure the domain argument starts with @');
+        }
+        foreach ($this->accountEmails as $accountEmail) {
+            if ($accountEmail->getVerifiedAt()>0) {
+                if (substr($accountEmail->getEmail(), -strlen($emailDomain))==$emailDomain) {
+                    return true;
+                }
             }
         }
         return false;

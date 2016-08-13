@@ -5,6 +5,7 @@ namespace UserBase\Client;
 use UserBase\Client\Model\User;
 use UserBase\Client\Model\Account;
 use UserBase\Client\Model\AccountUser;
+use UserBase\Client\Model\AccountEmail;
 use UserBase\Client\Model\AccountProperty;
 use UserBase\Client\Model\Policy;
 use RuntimeException;
@@ -125,6 +126,21 @@ class Client
         $account->setDeletedAt($data['deleted_at']);
         $account->setMessage($data['message']);
         $account->setExpireAt($data['expire_at']);
+
+
+        if (isset($data['emails'])) {
+            foreach ($data['emails'] as $accountEmailData) {
+                $accountEmail = new AccountEmail();
+                $accountEmail->setAccountName($account->getName());
+                $accountEmail->setEmail($accountEmailData['email']);
+                $accountEmail->setVerifiedAt($accountEmailData['verified_at']);
+                if ($accountEmailData['email'] == $data['email']) {
+                    $accountEmail->setPrimary(true);
+                }
+                $account->addAccountEmail($accountEmail);
+            }
+        }
+
         if (isset($data['members'])) {
             foreach ($data['members'] as $accountUserData) {
                 $accountUser = new AccountUser();
@@ -275,6 +291,23 @@ class Client
     public function getNotifications($accountName, $jsonData)
     {
         $data = $this->getData('/accounts/'.$accountName.'/notifications', $jsonData);
+        return $data;
+    }
+    
+    public function setAccountPrimaryEmail($accountName, $email)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/defaultEmail/' . $email);
+        return $data;
+    }
+    public function setAccountEmailVerified($accountName, $email)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/verifyEmail/' . $email);
+        return $data;
+    }
+    
+    public function addAccountEmail($accountName, $email)
+    {
+        $data = $this->getData('/accounts/'.$accountName.'/addEmail/' . $email);
         return $data;
     }
 }

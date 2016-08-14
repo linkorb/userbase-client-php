@@ -310,4 +310,10 @@ class Client
         $data = $this->getData('/accounts/'.$accountName.'/addEmail/' . $email);
         return $data;
     }
+    
+    public function invite($accountName, $displayName, $email, $payload = null)
+    {
+        $data = $this->getData('/invites/create/'. $accountName.'/' . rawurlencode($displayName) . '/' . rawurlencode($email) . '?payload=' . rawurlencode(base64_encode($payload)));
+        return $data;
+    }
 }

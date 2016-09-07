@@ -154,6 +154,11 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     {
         return $this->enabled;
     }
+    
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    }
 
     /**
      * {@inheritdoc}

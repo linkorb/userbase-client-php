@@ -81,6 +81,11 @@ class Client
                 $account = $this->itemToAccount($accountData);
                 $accountUser->setAccount($account);
                 $user->addAccountUser($accountUser);
+                if ($account->getAccountType()=='user') {
+                    if ($accountData['status'] != 'ACTIVE') {
+                        $user->setEnabled(false);
+                    }
+                }
             }
         }
 

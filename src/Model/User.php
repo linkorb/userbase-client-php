@@ -46,6 +46,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+        return $this;
     }
     
     public function getDeletedAt()
@@ -56,6 +57,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
+        return $this;
     }
         
     public function getLastSeenAt()
@@ -68,7 +70,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         if ($this->lastSeenAt>0) {
             $this->lastSeenAt = $lastSeenAt;
         }
-        return null;
+        return $this;
     }
     
     /**
@@ -90,6 +92,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function setPassword($password)
     {
         $this->password = $password;
+        return $this;
     }
 
     /**
@@ -110,6 +113,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function setUsername($username)
     {
         $this->name = $username;
+        return $this;
     }
     
     public function getName()
@@ -158,6 +162,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
+        return $this;
     }
 
     /**

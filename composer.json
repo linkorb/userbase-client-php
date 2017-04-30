@@ -4,16 +4,22 @@
     "homepage": "http://www.github.com/userbase-project/userbase-client-php",
     "keywords": ["login", "signup", "user", "account"],
     "type": "library",
-    "authors": [
-        {
-            "name": "Joost Faassen",
-            "email": "j.faassen@linkorb.com",
-            "role": "Development"
-        }
-    ],
+    "authors": [{
+        "name": "Joost Faassen",
+        "email": "j.faassen@linkorb.com",
+        "role": "Development"
+    }],
     "require": {
         "php": ">=5.3.0",
         "symfony/security": "~2.6"
+    },
+    "require-dev": {
+        "linkorb/conventions-checker": "~1.1"
+    },
+    "extra": {
+        "grumphp": {
+            "config-default-path": "vendor/linkorb/conventions-checker/config/lib/grumphp.yml"
+        }
     },
     "autoload": {
         "psr-4": {

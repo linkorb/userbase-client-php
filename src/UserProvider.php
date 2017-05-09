@@ -18,7 +18,7 @@ final class UserProvider implements UserProviderInterface
     {
         $this->client = $client;
     }
-    
+
     public function loadUserByUsername($username)
     {
         $user = $this->client->getUserByUsername($username);
@@ -27,7 +27,7 @@ final class UserProvider implements UserProviderInterface
         }
         return $user;
     }
-    
+
     // Needed for symfony user provider interface
     public function refreshUser(UserInterface $user)
     {

@@ -25,6 +25,7 @@ class Client
     protected $username;
     protected $password;
     protected $partition;
+    protected $timeDataCollector = null;
 
     public function __construct($baseUrl, $username, $password, $partition = 'dev')
     {
@@ -32,6 +33,11 @@ class Client
         $this->username = $username;
         $this->password = $password;
         $this->partition = $partition;
+    }
+
+    public function setTimeDataCollector($timeDataCollector)
+    {
+        $this->timeDataCollector = $timeDataCollector;
     }
 
     private function getStatusCode($ch)
@@ -173,7 +179,7 @@ class Client
     {
 
         $data = $this->getData('/users/' . $username);
-    
+
         if (isset($data['error'])) {
             throw new RuntimeException('User not found: ' . $username);
         }
@@ -204,6 +210,9 @@ class Client
 
     public function getData($uri, $jsonData = null)
     {
+        if ($this->timeDataCollector) {
+            $this->timeDataCollector->startMeasure('getData', $uri);
+        }
         $url =  $this->baseUrl . $uri;
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -218,6 +227,9 @@ class Client
         $json = curl_exec($ch);
         $info = curl_getinfo($ch);
         $code = $this->getStatusCode($ch);
+        if ($this->timeDataCollector) {
+            $this->timeDataCollector->stopMeasure('getData');
+        }
         if ($code != 200) {
             throw new RuntimeException("HTTP Status code: " . $code);
         }
@@ -244,7 +256,7 @@ class Client
         $data = $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
         return $data;
     }
-    
+
     public function setAccountPicture($accountName, $filename)
     {
         $data = $this->getData('/accounts/'.$accountName.'/setPicture');
@@ -298,7 +310,7 @@ class Client
         $data = $this->getData('/accounts/'.$accountName.'/notifications', $jsonData);
         return $data;
     }
-    
+
     public function setAccountPrimaryEmail($accountName, $email)
     {
         $data = $this->getData('/accounts/'.$accountName.'/defaultEmail/' . $email);
@@ -309,13 +321,13 @@ class Client
         $data = $this->getData('/accounts/'.$accountName.'/verifyEmail/' . $email);
         return $data;
     }
-    
+
     public function addAccountEmail($accountName, $email)
     {
         $data = $this->getData('/accounts/'.$accountName.'/addEmail/' . $email);
         return $data;
     }
-    
+
     public function invite($accountName, $displayName, $email, $payload = null)
     {
         $data = $this->getData('/invites/create/'. $accountName.'/' . rawurlencode($displayName) . '/' . rawurlencode($email) . '?payload=' . rawurlencode(base64_encode($payload)));

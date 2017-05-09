@@ -188,7 +188,10 @@ class Client
     public function getUserByUsername($username)
     {
 
-        $dataCache = $this->cache->getItem('userbase.userdata.' . $username);
+        $cacheKey = 'user.' . $username . '.data';
+        $cacheKey = str_replace('@', '%', $cacheKey);
+
+        $dataCache = $this->cache->getItem($cacheKey);
         if (!$dataCache->isHit()) {
             $data = $this->getData('/users/' . $username);
             if (isset($data['error'])) {

@@ -8,6 +8,7 @@ use UserBase\Client\Model\AccountUser;
 use UserBase\Client\Model\AccountEmail;
 use UserBase\Client\Model\AccountProperty;
 use UserBase\Client\Model\Policy;
+use Psr\Cache\CacheItemPoolInterface;
 use RuntimeException;
 
 if (!function_exists('curl_file_create')) {
@@ -26,6 +27,8 @@ class Client
     protected $password;
     protected $partition;
     protected $timeDataCollector = null;
+    protected $cache;
+    protected $cacheDuration;
 
     public function __construct($baseUrl, $username, $password, $partition = 'dev')
     {
@@ -33,11 +36,18 @@ class Client
         $this->username = $username;
         $this->password = $password;
         $this->partition = $partition;
+        $this->cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
     }
 
     public function setTimeDataCollector($timeDataCollector)
     {
         $this->timeDataCollector = $timeDataCollector;
+    }
+
+    public function setCache(CacheItemPoolInterface $cache, $cacheDuration = 60)
+    {
+        $this->cache = $cache;
+        $this->cacheDuration = $cacheDuration;
     }
 
     private function getStatusCode($ch)
@@ -178,11 +188,19 @@ class Client
     public function getUserByUsername($username)
     {
 
-        $data = $this->getData('/users/' . $username);
+        $dataCache = $this->cache->getItem('userbase.userdata.' . $username);
+        if (!$dataCache->isHit()) {
+            $data = $this->getData('/users/' . $username);
+            if (isset($data['error'])) {
+                throw new RuntimeException('User not found: ' . $username);
+            }
 
-        if (isset($data['error'])) {
-            throw new RuntimeException('User not found: ' . $username);
+            $dataCache->set($data);
+            $dataCache->expiresAfter($this->cacheDuration);
+            $this->cache->save($dataCache);
         }
+        $data = $dataCache->get();
+
         $user = $this->itemToUser($data);
         return $user;
     }

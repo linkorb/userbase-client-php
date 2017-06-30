@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 use UserBase\Client\Model\User;
 
-final class UserProvider implements UserProviderInterface
+class UserProvider implements UserProviderInterface
 {
     private $client;
 

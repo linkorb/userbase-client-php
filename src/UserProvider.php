@@ -14,10 +14,12 @@ use UserBase\Client\Model\User;
 class UserProvider implements UserProviderInterface
 {
     private $client;
+    private $shouldRefresh;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, $shouldRefresh = true)
     {
         $this->client = $client;
+        $this->shouldRefresh = (bool) $shouldRefresh;
     }
 
     public function loadUserByUsername($username)
@@ -37,6 +39,10 @@ class UserProvider implements UserProviderInterface
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
+        }
+
+        if (!$this->shouldRefresh) {
+            return $user;
         }
 
         return $this->loadUserByUsername($user->getUsername());

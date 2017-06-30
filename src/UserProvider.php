@@ -2,6 +2,8 @@
 
 namespace UserBase\Client;
 
+use RuntimeException;
+
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,11 +22,15 @@ final class UserProvider implements UserProviderInterface
 
     public function loadUserByUsername($username)
     {
-        $user = $this->client->getUserByUsername($username);
-        if (!$user) {
-            throw new UsernameNotFoundException(sprintf('User %s is not found.', $username));
+        try {
+            return $this->client->getUserByUsername($username);
+        } catch (RuntimeException $e) {
+            throw new UsernameNotFoundException(
+                "A User named \"{$username}\" cannot be found in Userbase.",
+                null,
+                $e
+            );
         }
-        return $user;
     }
 
     public function refreshUser(UserInterface $user)

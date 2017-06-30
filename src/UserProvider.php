@@ -2,13 +2,12 @@
 
 namespace UserBase\Client;
 
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+
 use UserBase\Client\Model\User;
-use UserBase\Client\Client;
-use RuntimeException;
 
 final class UserProvider implements UserProviderInterface
 {
@@ -28,7 +27,6 @@ final class UserProvider implements UserProviderInterface
         return $user;
     }
 
-    // Needed for symfony user provider interface
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
@@ -37,8 +35,6 @@ final class UserProvider implements UserProviderInterface
 
         return $this->loadUserByUsername($user->getUsername());
     }
-
-    // Needed for symfony user provider interface
 
     public function supportsClass($class)
     {

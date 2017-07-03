@@ -2,46 +2,54 @@
 
 namespace UserBase\Client;
 
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use UserBase\Client\Model\User;
-use UserBase\Client\Client;
 use RuntimeException;
 
-final class UserProvider implements UserProviderInterface
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+
+use UserBase\Client\Model\User;
+
+class UserProvider implements UserProviderInterface
 {
     private $client;
+    private $shouldRefresh;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, $shouldRefresh = true)
     {
         $this->client = $client;
+        $this->shouldRefresh = (bool) $shouldRefresh;
     }
 
     public function loadUserByUsername($username)
     {
-        $user = $this->client->getUserByUsername($username);
-        if (!$user) {
-            throw new UsernameNotFoundException(sprintf('User %s is not found.', $username));
+        try {
+            return $this->client->getUserByUsername($username);
+        } catch (RuntimeException $e) {
+            throw new UsernameNotFoundException(
+                "A User named \"{$username}\" cannot be found in Userbase.",
+                null,
+                $e
+            );
         }
-        return $user;
     }
 
-    // Needed for symfony user provider interface
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
+        if (!$this->shouldRefresh) {
+            return $user;
+        }
+
         return $this->loadUserByUsername($user->getUsername());
     }
 
-    // Needed for symfony user provider interface
-
     public function supportsClass($class)
     {
-        return $class === 'Symfony\Component\Security\Core\User\User';
+        return $class === User::class;
     }
 }

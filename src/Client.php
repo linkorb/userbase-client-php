@@ -30,11 +30,28 @@ class Client
     protected $cache;
     protected $cacheDuration;
 
-    public function __construct($baseUrl, $username, $password, $partition = 'dev')
+    public function __construct($url, $username = null, $password = null, $partition = 'dev')
     {
-        $this->baseUrl = $baseUrl;
-        $this->username = $username;
-        $this->password = $password;
+        $part = parse_url($url);
+
+        $this->baseUrl = $part['scheme'] . '://' . $part['host'];
+        if (isset($part['path'])) {
+            $this->baseUrl .= $part['path'];
+        } else {
+            $this->baseUrl .= '/api/v1';
+        }
+        if (isset($part['user'])) {
+            $this->username = $part['user'];
+        }
+        if (isset($part['pass'])) {
+            $this->password = $part['pass'];
+        }
+        if ($username) {
+            $this->username = $username;
+        }
+        if ($password) {
+            $this->password = $password;
+        }
         $this->partition = $partition;
         $this->cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
     }

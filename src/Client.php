@@ -32,28 +32,41 @@ class Client
 
     public function __construct($url, $username = null, $password = null, $partition = 'dev')
     {
-        $part = parse_url($url);
+        $parts = parse_url($url);
 
-        $this->baseUrl = $part['scheme'] . '://' . $part['host'];
-        if (isset($part['path'])) {
-            $this->baseUrl .= $part['path'];
+        if (isset($parts['user']) && isset($parts['pass'])) {
+            $this->parse_dsn($parts);
         } else {
+            $this->baseUrl = $url;
+        }
+
+        if (!isset($parts['path'])) {
             $this->baseUrl .= '/api/v1';
         }
-        if (isset($part['user'])) {
-            $this->username = $part['user'];
-        }
-        if (isset($part['pass'])) {
-            $this->password = $part['pass'];
-        }
+
         if ($username) {
             $this->username = $username;
         }
         if ($password) {
             $this->password = $password;
         }
+
         $this->partition = $partition;
         $this->cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
+    }
+
+    private function parse_dsn(array $parts)
+    {
+        $this->username = $parts['user'];
+        $this->password = $parts['pass'];
+
+        $this->baseUrl = "{$parts['scheme']}://{$parts['host']}";
+        if (isset($parts['port'])) {
+            $this->baseUrl .= ":{$parts['port']}";
+        }
+        if (isset($parts['path'])) {
+            $this->baseUrl .= $parts['path'];
+        }
     }
 
     public function setTimeDataCollector($timeDataCollector)

@@ -119,6 +119,8 @@ class Client
         $user->setPassword($data['password']);
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
+        $user->setAccountNonLocked((int) $data['accountNonLocked']);
+
         if (isset($data['accounts'])) {
             foreach ($data['accounts'] as $accountData) {
                 $accountUser = new AccountUser();
@@ -217,7 +219,6 @@ class Client
 
     public function getUserByUsername($username)
     {
-
         $cacheKey = 'user.' . $username . '.data';
         $cacheKey = str_replace('@', '%', $cacheKey);
 
@@ -327,7 +328,6 @@ class Client
     {
         $data = $this->getData('/accounts/'.$accountName.'/addEvent/'.urlencode($eventName).'?'.$data);
         return $data;
-
     }
 
     public function createAccount($accountName, $accountType)

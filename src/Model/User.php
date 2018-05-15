@@ -143,6 +143,13 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         return $this->accountNonLocked;
     }
 
+    public function setAccountNonLocked($accountNonLocked)
+    {
+        $this->accountNonLocked = $accountNonLocked;
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -119,7 +119,8 @@ class Client
         $user->setPassword($data['password']);
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
-        $user->setAccountNonLocked((int) $data['accountNonLocked']);
+        // $user->setAccountNonLocked((int) $data['accountNonLocked']);
+        $user->setAccountNonLocked(isset($data['accountNonLocked']) ? (int) $data['accountNonLocked'] : true);
 
         if (isset($data['accounts'])) {
             foreach ($data['accounts'] as $accountData) {

@@ -15,8 +15,8 @@ if (!function_exists('curl_file_create')) {
     function curl_file_create($filename, $mimetype = '', $postname = '')
     {
         return "@$filename;filename="
-            . ($postname ?: basename($filename))
-            . ($mimetype ? ";type=$mimetype" : '');
+            .($postname ?: basename($filename))
+            .($mimetype ? ";type=$mimetype" : '');
     }
 }
 
@@ -83,7 +83,8 @@ class Client
     private function getStatusCode($ch)
     {
         $info = curl_getinfo($ch);
-        return (int)$info['http_code'];
+
+        return (int) $info['http_code'];
     }
 
     public function getBaseUrl()
@@ -109,6 +110,7 @@ class Client
             $user = $this->itemToUser($item);
             $users[] = $user;
         }
+
         return $users;
     }
 
@@ -119,7 +121,8 @@ class Client
         $user->setPassword($data['password']);
         $user->setCreatedAt($data['created_at']);
         $user->setDeletedAt($data['deleted_at']);
-        $user->setAccountNonLocked((int) $data['accountNonLocked']);
+        // $user->setAccountNonLocked((int) $data['accountNonLocked']);
+        $user->setAccountNonLocked(isset($data['accountNonLocked']) ? (int) $data['accountNonLocked'] : true);
 
         if (isset($data['accounts'])) {
             foreach ($data['accounts'] as $accountData) {
@@ -129,8 +132,8 @@ class Client
                 $account = $this->itemToAccount($accountData);
                 $accountUser->setAccount($account);
                 $user->addAccountUser($accountUser);
-                if ($account->getAccountType()=='user') {
-                    if ($accountData['status'] != 'ACTIVE') {
+                if ('user' == $account->getAccountType()) {
+                    if ('ACTIVE' != $accountData['status']) {
                         $user->setEnabled(false);
                     }
                 }
@@ -144,15 +147,16 @@ class Client
                 $policy->setResource($policyData['resource']);
                 foreach ($policyData['action'] as $action) {
                     $policy->addAction($action);
-                    if ($policy->getEffect() == 'allow') {
-                        $roleName = 'ROLE_' . $policy->getResource();
-                        $roleName .= '@' . $action;
+                    if ('allow' == $policy->getEffect()) {
+                        $roleName = 'ROLE_'.$policy->getResource();
+                        $roleName .= '@'.$action;
                         $user->addRole($roleName);
                     }
                 }
                 $user->addPolicy($policy);
             }
         }
+
         return $user;
     }
 
@@ -179,7 +183,6 @@ class Client
         $account->setDeletedAt($data['deleted_at']);
         $account->setMessage($data['message']);
         $account->setExpireAt($data['expire_at']);
-
 
         if (isset($data['emails'])) {
             foreach ($data['emails'] as $accountEmailData) {
@@ -219,14 +222,14 @@ class Client
 
     public function getUserByUsername($username)
     {
-        $cacheKey = 'user.' . $username . '.data';
+        $cacheKey = 'user.'.$username.'.data';
         $cacheKey = str_replace('@', '%', $cacheKey);
 
         $dataCache = $this->cache->getItem($cacheKey);
         if (!$dataCache->isHit()) {
-            $data = $this->getData('/users/' . $username);
+            $data = $this->getData('/users/'.$username);
             if (isset($data['error'])) {
-                throw new RuntimeException('User not found: ' . $username);
+                throw new RuntimeException('User not found: '.$username);
             }
 
             $dataCache->set($data);
@@ -236,16 +239,18 @@ class Client
         $data = $dataCache->get();
 
         $user = $this->itemToUser($data);
+
         return $user;
     }
 
     public function getAccountByName($name)
     {
-        $data = $this->getData('/accounts/' . $name);
+        $data = $this->getData('/accounts/'.$name);
         if (!isset($data['name'])) {
             return false;
         }
         $account = $this->itemToAccount($data);
+
         return $account;
     }
 
@@ -257,6 +262,7 @@ class Client
             $user = $this->itemToAccount($item);
             $users[] = $user;
         }
+
         return $users;
     }
 
@@ -265,10 +271,10 @@ class Client
         if ($this->timeDataCollector) {
             $this->timeDataCollector->startMeasure('getData', $uri);
         }
-        $url =  $this->baseUrl . $uri;
+        $url = $this->baseUrl.$uri;
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->username.':'.$this->password);
 
         if ($jsonData) {
             curl_setopt($ch, CURLOPT_POST, true);
@@ -282,8 +288,8 @@ class Client
         if ($this->timeDataCollector) {
             $this->timeDataCollector->stopMeasure('getData');
         }
-        if ($code != 200) {
-            throw new RuntimeException("HTTP Status code: " . $code);
+        if (200 != $code) {
+            throw new RuntimeException('HTTP Status code: '.$code);
         }
         $data = @json_decode($json, true);
         curl_close($ch);
@@ -300,33 +306,38 @@ class Client
         }
         $encoder = new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder();
         $valid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
+
         return $valid;
     }
 
     public function setAccountProperty($accountName, $propertyName, $propertyValue)
     {
         $data = $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
+
         return $data;
     }
 
     public function setAccountPicture($accountName, $filename)
     {
         $data = $this->getData('/accounts/'.$accountName.'/setPicture');
+
         return $data;
     }
 
     public function addAccountUser($accountName, $userName, $isAdmin)
     {
         $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);
-        if ($data['status'] != 'ok') {
-            throw new RuntimeException("Failed to add user to account");
+        if ('ok' != $data['status']) {
+            throw new RuntimeException('Failed to add user to account');
         }
+
         return true;
     }
 
     public function addEvent($accountName, $eventName, $data)
     {
         $data = $this->getData('/accounts/'.$accountName.'/addEvent/'.urlencode($eventName).'?'.$data);
+
         return $data;
     }
 
@@ -334,8 +345,9 @@ class Client
     {
         $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode($accountType));
         if (isset($data['error'])) {
-            throw new RuntimeException($data['error']['code'] . ': ' . $data['error']['message']);
+            throw new RuntimeException($data['error']['code'].': '.$data['error']['message']);
         }
+
         return true;
     }
 
@@ -343,45 +355,60 @@ class Client
     {
         $url = '/accounts/'.$accountName.'/update?x=1';
         foreach ($properties as $key => $value) {
-            $url .= '&' . $key . '=' . urlencode($value);
+            $url .= '&'.$key.'='.urlencode($value);
         }
         //echo $url; exit();
         $data = $this->getData($url);
+
         return $data;
     }
 
     public function createNotification($accountName, $jsonData = null)
     {
         $data = $this->getData('/accounts/'.$accountName.'/notifications/add', $jsonData);
+
         return $data;
     }
 
     public function getNotifications($accountName, $jsonData)
     {
         $data = $this->getData('/accounts/'.$accountName.'/notifications', $jsonData);
+
         return $data;
     }
 
     public function setAccountPrimaryEmail($accountName, $email)
     {
-        $data = $this->getData('/accounts/'.$accountName.'/defaultEmail/' . $email);
+        $data = $this->getData('/accounts/'.$accountName.'/defaultEmail/'.$email);
+
         return $data;
     }
+
     public function setAccountEmailVerified($accountName, $email)
     {
-        $data = $this->getData('/accounts/'.$accountName.'/verifyEmail/' . $email);
+        $data = $this->getData('/accounts/'.$accountName.'/verifyEmail/'.$email);
+
         return $data;
     }
 
     public function addAccountEmail($accountName, $email)
     {
-        $data = $this->getData('/accounts/'.$accountName.'/addEmail/' . $email);
+        $data = $this->getData('/accounts/'.$accountName.'/addEmail/'.$email);
+
         return $data;
     }
 
     public function invite($accountName, $displayName, $email, $payload = null)
     {
-        $data = $this->getData('/invites/create/'. $accountName.'/' . rawurlencode($displayName) . '/' . rawurlencode($email) . '?payload=' . rawurlencode(base64_encode($payload)));
+        $data = $this->getData('/invites/create/'.$accountName.'/'.rawurlencode($displayName).'/'.rawurlencode($email).'?payload='.rawurlencode(base64_encode($payload)));
+
+        return $data;
+    }
+
+    public function sendPushMessage($username, $message, $data = [])
+    {
+        $data = $this->getData('/push?username='.$username.'&message='.rawurlencode($message), json_encode($data));
+
         return $data;
     }
 }

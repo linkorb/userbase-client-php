@@ -2,11 +2,16 @@
 
 namespace UserBase\Client\Model;
 
+use LinkORB\Contracts\UserbaseRole\RoleInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-use Symfony\Component\Security\Core\Role\Role;
 use RuntimeException;
 
-final class User implements UserInterface, AdvancedUserInterface, AccountContainerInterface, PolicyContainerInterface
+final class User implements
+    AccountContainerInterface,
+    AdvancedUserInterface,
+    PolicyContainerInterface,
+    RoleInterface,
+    UserInterface
 {
     private $password;
     private $enabled;

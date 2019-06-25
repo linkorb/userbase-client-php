@@ -14,11 +14,11 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     private $credentialsNonExpired;
     private $accountNonLocked;
     private $roles;
-    
+
     private $createdAt;
     private $lastSeenAt;
     private $deletedAt;
-    
+
     private $accountUsers = array();
     private $policies = array();
 
@@ -37,34 +37,34 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         $this->roles = array();
         $this->salt = "KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324";
     }
-    
+
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
-    
+
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
         return $this;
     }
-    
+
     public function getDeletedAt()
     {
         return $this->deletedAt;
     }
-    
+
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
         return $this;
     }
-        
+
     public function getLastSeenAt()
     {
         return $this->lastSeenAt;
     }
-    
+
     public function setLastSeenAt($lastSeenAt)
     {
         if ($this->lastSeenAt>0) {
@@ -72,7 +72,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         }
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -88,7 +88,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     {
         return $this->password;
     }
-    
+
     public function setPassword($password)
     {
         $this->password = $password;
@@ -115,18 +115,18 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         $this->name = $username;
         return $this;
     }
-    
+
     public function getName()
     {
         return $this->name;
     }
-    
+
     public function getDisplayName()
     {
         $account = $this->getUserAccount();
         return $account->getDisplayName();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -165,7 +165,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     {
         return $this->enabled;
     }
-    
+
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
@@ -178,12 +178,12 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     public function eraseCredentials()
     {
     }
-    
+
     public function getEmail()
     {
         return $this->getUserAccount()->getEmail();
     }
-    
+
     public function getPictureUrl($size = null)
     {
         return $this->getUserAccount()->getPictureUrl($size);
@@ -193,12 +193,12 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
     {
         $this->accountUsers[] = $accountUser;
     }
-    
+
     public function getAccountUsers()
     {
         return $this->accountUsers;
     }
-    
+
     public function getAccounts()
     {
         $accounts = array();
@@ -207,7 +207,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         }
         return $accounts;
     }
-    
+
     public function getUserAccount()
     {
         foreach ($this->getAccounts() as $account) {
@@ -217,7 +217,7 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         }
         throw new RuntimeException("This user has no user-account: " . $this->getName());
     }
-    
+
     public function getAccountsByType($type)
     {
         $res = array();
@@ -228,17 +228,17 @@ final class User implements UserInterface, AdvancedUserInterface, AccountContain
         }
         return $res;
     }
-    
+
     public function addPolicy(Policy $policy)
     {
         $this->policies[] = $policy;
     }
-    
+
     public function getPolicies()
     {
         return $this->policies;
     }
-    
+
     public function addRole($roleName)
     {
         $this->roles[] = $roleName;

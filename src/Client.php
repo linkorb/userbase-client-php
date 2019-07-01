@@ -227,6 +227,7 @@ class Client
 
         $dataCache = $this->cache->getItem($cacheKey);
         if (!$dataCache->isHit()) {
+            $username = 'base64:'.base64_encode($username);
             $data = $this->getData('/users/'.$username);
             if (isset($data['error'])) {
                 throw new RuntimeException('User not found: '.$username);

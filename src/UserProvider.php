@@ -4,6 +4,8 @@ namespace UserBase\Client;
 
 use RuntimeException;
 
+use LinkORB\Contracts\UserbaseRole\RoleManagerInterface;
+use LinkORB\Contracts\UserbaseRole\RoleProviderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,9 +16,10 @@ use UserBase\Client\Model\User;
 use UserBase\Client\Event\UserLoadedEvent;
 
 
-class UserProvider implements UserProviderInterface
+class UserProvider implements UserProviderInterface, RoleManagerInterface
 {
     private $client;
+    private $roleProvider;
     private $shouldRefresh;
     private $dispatcher;
 
@@ -27,6 +30,11 @@ class UserProvider implements UserProviderInterface
         $this->dispatcher = $dispatcher;
     }
 
+    public function setRoleProvider(RoleProviderInterface $roleProvider)
+    {
+        $this->roleProvider = $roleProvider;
+    }
+
     public function loadUserByUsername($username)
     {
         try {
@@ -35,7 +43,6 @@ class UserProvider implements UserProviderInterface
                 $event = new UserLoadedEvent($user);
                 $this->dispatcher->dispatch('userbase.user_loaded', $event);
             }
-            return $user;
         } catch (RuntimeException $e) {
             throw new UsernameNotFoundException(
                 "A User named \"{$username}\" cannot be found in Userbase.",
@@ -43,6 +50,16 @@ class UserProvider implements UserProviderInterface
                 $e
             );
         }
+
+        if (!$this->roleProvider) {
+            return $user;
+        }
+
+        foreach ($this->roleProvider->getRoles($user) as $roleName) {
+            $user->addRole($roleName);
+        }
+
+        return $user;
     }
 
     public function refreshUser(UserInterface $user)

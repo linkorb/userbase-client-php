@@ -16,7 +16,8 @@
         "linkorb/userbase-role-contracts": "^1.0",
         "symfony/security": "~2.6 || ~3.0 || ^4",
         "psr/cache": "~1.0",
-        "symfony/cache": "~3.0 || ^4"
+        "symfony/cache": "~3.0 || ^4",
+        "linkorb/envoi": "^1.1"
     },
     "require-dev": {
       "symfony/dotenv": "~3.0 || ^4"

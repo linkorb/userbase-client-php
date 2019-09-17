@@ -320,6 +320,8 @@ class Client
 
     public function setAccountPicture($accountName, $filename)
     {
+        return $this->uploadPhoto('/accounts/'.$accountName.'/setPicture', $filename);
+
         $data = $this->getData('/accounts/'.$accountName.'/setPicture');
 
         return $data;
@@ -409,6 +411,78 @@ class Client
     public function sendPushMessage($username, $message, $data = [])
     {
         $data = $this->getData('/push?username='.$username.'&message='.rawurlencode($message), json_encode($data));
+
+        return $data;
+    }
+
+    public function uploadPhoto($uri, $file)
+    {
+        $fields = array();
+        $files['file'] = base64_decode($file);
+        $boundary = uniqid();
+        $delimiter = '-------------'.$boundary;
+
+        $postData = $this->buildDataFiles($boundary, $fields, $files);
+
+        $url = $this->baseUrl.$uri;
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+          CURLOPT_USERPWD => $this->username.':'.$this->password,
+          CURLOPT_URL => $url,
+          CURLOPT_RETURNTRANSFER => 1,
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POST => 1,
+          CURLOPT_POSTFIELDS => $postData,
+          CURLOPT_HTTPHEADER => array(
+            'Content-Type: multipart/form-data; boundary='.$delimiter,
+            'Content-Length: '.strlen($postData),
+          ),
+        ));
+
+        $json = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        $code = $this->getStatusCode($ch);
+        if ($this->timeDataCollector) {
+            $this->timeDataCollector->stopMeasure('getData');
+        }
+        if (200 != $code) {
+            throw new RuntimeException('HTTP Status code: '.$code);
+        }
+        $data = @json_decode($json, true);
+        curl_close($ch);
+
+        return $data;
+    }
+
+    /**
+     * @return string file content and post data
+     */
+    public function buildDataFiles($boundary, $fields, $files)
+    {
+        $data = '';
+        $eol = PHP_EOL;
+
+        $delimiter = '-------------'.$boundary;
+
+        foreach ($fields as $name => $content) {
+            $data .= '--'.$delimiter.$eol
+                .'Content-Disposition: form-data; name="'.$name.'"'.$eol.$eol
+                .$content.$eol;
+        }
+
+        foreach ($files as $name => $content) {
+            $data .= '--'.$delimiter.$eol
+                .'Content-Disposition: form-data; name="'.$name.'"; filename="'.$name.'"'.$eol
+                //. 'Content-Type: image/png'.$eol
+                .'Content-Transfer-Encoding: binary'.$eol
+                ;
+
+            $data .= $eol;
+            $data .= $content.$eol;
+        }
+        $data .= '--'.$delimiter.'--'.$eol;
 
         return $data;
     }

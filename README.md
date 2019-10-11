@@ -34,6 +34,12 @@ The `examples/` directory contains a few example scripts that you can use during
 
 First, copy the `.env.dist` file to `.env`. Edit the contents to match your Userbase server and credentials.
 
+```bash
+cp .env.dist .env e
+edit .env # Edit configuration, database settings etc
+ ./vendor/bin/envoi validate  # Run command validate based on meta file .env.yaml
+```
+
 Then you can simply execute the examples like this:
 
     php examples/checkcredentials.php alice sshhh

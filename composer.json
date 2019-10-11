@@ -9,6 +9,11 @@
             "name": "Joost Faassen",
             "email": "j.faassen@linkorb.com",
             "role": "Development"
+        },
+        {
+            "name": "kaushik prajapati",
+            "email": "prajapatikaushik@gmail.com",
+            "role": "Developer"
         }
     ],
     "require": {

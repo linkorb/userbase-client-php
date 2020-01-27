@@ -284,11 +284,19 @@ class Client
         }
 
         $json = curl_exec($ch);
+
+        if($json === false)
+        {
+            throw new RuntimeException('Curl error: '.curl_error($ch));
+        }
+
         $info = curl_getinfo($ch);
         $code = $this->getStatusCode($ch);
         if ($this->timeDataCollector) {
             $this->timeDataCollector->stopMeasure('getData');
         }
+
+
         if (200 != $code) {
             throw new RuntimeException('HTTP Status code: '.$code.'message: '.$json);
         }

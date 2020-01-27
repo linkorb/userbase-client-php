@@ -290,7 +290,7 @@ class Client
             $this->timeDataCollector->stopMeasure('getData');
         }
         if (200 != $code) {
-            throw new RuntimeException('HTTP Status code: '.$code);
+            throw new RuntimeException('HTTP Status code: '.$code.'message: '.$json);
         }
         $data = @json_decode($json, true);
         curl_close($ch);

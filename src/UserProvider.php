@@ -5,11 +5,11 @@ namespace UserBase\Client;
 use LinkORB\Contracts\UserbaseRole\RoleManagerInterface;
 use LinkORB\Contracts\UserbaseRole\RoleProviderInterface;
 use RuntimeException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use UserBase\Client\Event\UserLoadedEvent;
 use UserBase\Client\Model\User;
 
@@ -38,7 +38,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
             $user = $this->client->getUserByUsername($username);
             if ($this->dispatcher) {
                 $event = new UserLoadedEvent($user);
-                $this->dispatcher->dispatch('userbase.user_loaded', $event);
+                $this->dispatcher->dispatch($event, 'userbase.user_loaded');
             }
         } catch (RuntimeException $e) {
             throw new UsernameNotFoundException(

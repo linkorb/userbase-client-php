@@ -4,20 +4,34 @@ namespace UserBase\Client\Model;
 
 use LinkORB\Contracts\UserbaseRole\RoleInterface;
 use RuntimeException;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 final class User implements
     AccountContainerInterface,
-    AdvancedUserInterface,
+    BaseUserInterface,
+    LegacyAdvancedUserInterface,
     PolicyContainerInterface,
     RoleInterface,
     UserInterface
 {
-    private $password;
+    /**
+     * @deprecated
+     */
     private $enabled;
+    /**
+     * @deprecated
+     */
     private $accountNonExpired;
+    /**
+     * @deprecated
+     */
     private $credentialsNonExpired;
+    /**
+     * @deprecated
+     */
     private $accountNonLocked;
+
+    private $password;
     private $roles;
 
     private $createdAt;
@@ -134,7 +148,7 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isAccountNonExpired()
     {
@@ -142,13 +156,16 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isAccountNonLocked()
     {
         return $this->accountNonLocked;
     }
 
+    /**
+     * @deprecated
+     */
     public function setAccountNonLocked($accountNonLocked)
     {
         $this->accountNonLocked = $accountNonLocked;
@@ -157,7 +174,7 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isCredentialsNonExpired()
     {
@@ -165,13 +182,16 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isEnabled()
     {
         return $this->enabled;
     }
 
+    /**
+     * @deprecated
+     */
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;

@@ -470,7 +470,7 @@ class Client
     public function buildDataFiles($boundary, $fields, $files)
     {
         $data = '';
-        $eol = PHP_EOL;
+        $eol = "\r\n";
 
         $delimiter = '-------------'.$boundary;
 

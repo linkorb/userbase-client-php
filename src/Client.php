@@ -430,7 +430,7 @@ class Client
         $boundary = uniqid();
         $delimiter = '-------------'.$boundary;
 
-        $postData = $this->buildDataFiles($boundary, $fields, $files);
+        $postData = $this->buildDataFiles($boundary, $files);
 
         $url = $this->baseUrl.$uri;
         $ch = curl_init();
@@ -467,23 +467,17 @@ class Client
     /**
      * @return string file content and post data
      */
-    public function buildDataFiles($boundary, $fields, $files)
+    public function buildDataFiles($boundary, array $files): string
     {
         $data = '';
         $eol = "\r\n";
 
         $delimiter = '-------------'.$boundary;
 
-        foreach ($fields as $name => $content) {
-            $data .= '--'.$delimiter.$eol
-                .'Content-Disposition: form-data; name="'.$name.'"'.$eol.$eol
-                .$content.$eol;
-        }
-
         foreach ($files as $name => $content) {
             $data .= '--'.$delimiter.$eol
-                .'Content-Disposition: form-data; name="'.$name.'"; filename="'.$name.'"'.$eol
-                //. 'Content-Type: image/png'.$eol
+                .'Content-Disposition: form-data; name="'.$name.'"; filename="'.$name.'.png"'.$eol
+                .'Content-Type: image/png'.$eol
                 .'Content-Transfer-Encoding: binary'.$eol
                 ;
 

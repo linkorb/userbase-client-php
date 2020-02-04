@@ -3,9 +3,8 @@
 require_once('common.php');
 
 try {
-    $accountName = 'Maruti';
-    $propertyName = 'suv';
-    $propertyValue = 'x cross';
+    $propertyName = 'test';
+    $propertyValue = 'example';
 
     $users = $client->setAccountProperty($accountName, $propertyName, $propertyValue);
     print_r($users);

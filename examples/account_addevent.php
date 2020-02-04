@@ -2,7 +2,6 @@
 require_once('common.php');
 
 try {
-    $accountName = ''; //account name
     $eventName = ''; // eventname
     $data = ''; // pass as query string x=y&hello=world
 

@@ -2,8 +2,6 @@
 require_once('common.php');
 
 try {
-    $accountName = ''; //account name
-
     $jsonData = json_encode([
         "notificationType" => "",
         "status" => "",

@@ -13,10 +13,9 @@ $envMetaFile = __DIR__.'/../.env.yaml';
 Envoi::init($envFilename, $envMetaFile);
 
 $url = getenv('USERBASE_CLIENT_URL');
-//$username = getenv('USERBASE_CLIENT_USERNAME');
-//$password = getenv('USERBASE_CLIENT_PASSWORD');
+$accountName = getenv('USERBASE_ACCOUNT');
 
-if (!$url) {
+if ((!$url) || (!$accountName)) {
     echo "Environment variables not yet properly configured\n";
     exit();
 }

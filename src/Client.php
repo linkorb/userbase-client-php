@@ -2,14 +2,16 @@
 
 namespace UserBase\Client;
 
-use UserBase\Client\Model\User;
-use UserBase\Client\Model\Account;
-use UserBase\Client\Model\AccountUser;
-use UserBase\Client\Model\AccountEmail;
-use UserBase\Client\Model\AccountProperty;
-use UserBase\Client\Model\Policy;
 use Psr\Cache\CacheItemPoolInterface;
 use RuntimeException;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use UserBase\Client\Model\Account;
+use UserBase\Client\Model\AccountEmail;
+use UserBase\Client\Model\AccountProperty;
+use UserBase\Client\Model\AccountUser;
+use UserBase\Client\Model\Policy;
+use UserBase\Client\Model\User;
 
 if (!function_exists('curl_file_create')) {
     function curl_file_create($filename, $mimetype = '', $postname = '')
@@ -52,7 +54,7 @@ class Client
         }
 
         $this->partition = $partition;
-        $this->cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
+        $this->cache = new ArrayAdapter();
     }
 
     private function parse_dsn(array $parts)
@@ -285,8 +287,7 @@ class Client
 
         $json = curl_exec($ch);
 
-        if($json === false)
-        {
+        if (false === $json) {
             throw new RuntimeException('Curl error: '.curl_error($ch));
         }
 
@@ -295,7 +296,6 @@ class Client
         if ($this->timeDataCollector) {
             $this->timeDataCollector->stopMeasure('getData');
         }
-
 
         if (200 != $code) {
             throw new RuntimeException('HTTP Status code: '.$code.'message: '.$json);
@@ -313,7 +313,7 @@ class Client
         } catch (\Exception $e) {
             return false;
         }
-        $encoder = new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder();
+        $encoder = new MessageDigestPasswordEncoder();
         $valid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
 
         return $valid;

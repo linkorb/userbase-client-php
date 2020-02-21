@@ -52,9 +52,10 @@ Please refer to the `examples/` directory for other examples.
 
 A Silex Provider is available [here](https://github.com/linkorb/silex-provider-userbase-client)
 
-### Symfony 4
+### Symfony
 
-A Symfony 4 bundle can be found [here](https://github.com/linkorb/userbase-client-bundle)
+A Symfony bundle can be found [here](https://github.com/linkorb/userbase-client-bundle).
+It works with Symfony 4 and 5 projects.
 
 ## License
 

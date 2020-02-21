@@ -2,19 +2,16 @@
 
 namespace UserBase\Client;
 
-use RuntimeException;
-
 use LinkORB\Contracts\UserbaseRole\RoleManagerInterface;
 use LinkORB\Contracts\UserbaseRole\RoleProviderInterface;
+use RuntimeException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-
-use UserBase\Client\Model\User;
 use UserBase\Client\Event\UserLoadedEvent;
-
+use UserBase\Client\Model\User;
 
 class UserProvider implements UserProviderInterface, RoleManagerInterface
 {
@@ -77,6 +74,6 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
 
     public function supportsClass($class)
     {
-        return $class === User::class;
+        return User::class === $class;
     }
 }

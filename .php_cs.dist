@@ -1,0 +1,25 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__.'/src')
+;
+
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@PSR1' => true,
+        '@PSR2' => true,
+        '@Symfony' => true,
+        'single_line_throw' => false,
+        'no_superfluous_phpdoc_tags' => false,
+        'ordered_imports' => true,
+        'phpdoc_align' => false,
+        'no_extra_consecutive_blank_lines' => false,
+        'blank_line_before_statement' => [
+            'statements' => [
+                'declare',
+            ]
+        ],
+        'array_syntax' => false,
+    ])
+    ->setFinder($finder)
+;

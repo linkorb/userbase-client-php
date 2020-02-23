@@ -3,21 +3,35 @@
 namespace UserBase\Client\Model;
 
 use LinkORB\Contracts\UserbaseRole\RoleInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use RuntimeException;
+use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 final class User implements
     AccountContainerInterface,
-    AdvancedUserInterface,
+    BaseUserInterface,
+    LegacyAdvancedUserInterface,
     PolicyContainerInterface,
     RoleInterface,
     UserInterface
 {
-    private $password;
+    /**
+     * @deprecated
+     */
     private $enabled;
+    /**
+     * @deprecated
+     */
     private $accountNonExpired;
+    /**
+     * @deprecated
+     */
     private $credentialsNonExpired;
+    /**
+     * @deprecated
+     */
     private $accountNonLocked;
+
+    private $password;
     private $roles;
 
     private $createdAt;
@@ -40,7 +54,7 @@ final class User implements
         $this->credentialsNonExpired = true;
         $this->accountNonLocked = true;
         $this->roles = array();
-        $this->salt = "KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324";
+        $this->salt = 'KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324';
     }
 
     public function getCreatedAt()
@@ -72,7 +86,7 @@ final class User implements
 
     public function setLastSeenAt($lastSeenAt)
     {
-        if ($this->lastSeenAt>0) {
+        if ($this->lastSeenAt > 0) {
             $this->lastSeenAt = $lastSeenAt;
         }
         return $this;
@@ -115,6 +129,7 @@ final class User implements
     {
         return $this->getName();
     }
+
     public function setUsername($username)
     {
         $this->name = $username;
@@ -133,7 +148,7 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isAccountNonExpired()
     {
@@ -141,13 +156,16 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isAccountNonLocked()
     {
         return $this->accountNonLocked;
     }
 
+    /**
+     * @deprecated
+     */
     public function setAccountNonLocked($accountNonLocked)
     {
         $this->accountNonLocked = $accountNonLocked;
@@ -156,7 +174,7 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isCredentialsNonExpired()
     {
@@ -164,13 +182,16 @@ final class User implements
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function isEnabled()
     {
         return $this->enabled;
     }
 
+    /**
+     * @deprecated
+     */
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
@@ -220,7 +241,7 @@ final class User implements
                 return $account;
             }
         }
-        throw new RuntimeException("This user has no user-account: " . $this->getName());
+        throw new RuntimeException('This user has no user-account: '.$this->getName());
     }
 
     public function getAccountsByType($type)

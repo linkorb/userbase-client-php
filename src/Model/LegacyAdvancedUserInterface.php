@@ -14,7 +14,7 @@ namespace UserBase\Client\Model;
  * For info about UserCheckers see:
  * https://symfony.com/doc/current/security/user_checkers.html
  */
-interface LegacyAdvancedUserInterface extends UserInterface
+interface LegacyAdvancedUserInterface
 {
     /**
      * Check whether the user's account has expired.

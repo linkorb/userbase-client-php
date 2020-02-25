@@ -2,7 +2,7 @@
 
 namespace UserBase\Client\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use UserBase\Client\Model\User;
 
 class UserLoadedEvent extends Event

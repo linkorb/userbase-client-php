@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "linkorb/envoi": "^1.1",
+        "linkorb/envoi": "^1.0",
         "linkorb/userbase-role-contracts": "^2.0",
         "psr/cache": "~1.0",
         "symfony/cache": "~3.0 || ^4.0 || ^5.0",

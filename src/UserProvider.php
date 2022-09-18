@@ -43,7 +43,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
         } catch (RuntimeException $e) {
             throw new UsernameNotFoundException(
                 "A User named \"{$username}\" cannot be found in Userbase.",
-                null,
+                0,
                 $e
             );
         }

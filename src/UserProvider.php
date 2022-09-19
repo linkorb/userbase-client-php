@@ -6,7 +6,7 @@ use LinkORB\Contracts\UserbaseRole\RoleManagerInterface;
 use LinkORB\Contracts\UserbaseRole\RoleProviderInterface;
 use RuntimeException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -34,15 +34,20 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
 
     public function loadUserByUsername($username)
     {
+        return $this->loadUserByIdentifier((string) $username);
+    }
+
+    public function loadUserByIdentifier(string $identifier): UserInterface
+    {
         try {
-            $user = $this->client->getUserByUsername($username);
+            $user = $this->client->getUserByUsername($identifier);
             if ($this->dispatcher) {
                 $event = new UserLoadedEvent($user);
                 $this->dispatcher->dispatch($event, 'userbase.user_loaded');
             }
         } catch (RuntimeException $e) {
-            throw new UsernameNotFoundException(
-                "A User named \"{$username}\" cannot be found in Userbase.",
+            throw new UserNotFoundException(
+                "A User \"{$identifier}\" cannot be found in Userbase.",
                 0,
                 $e
             );
@@ -69,7 +74,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
             return $user;
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
     public function supportsClass($class)

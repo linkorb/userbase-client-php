@@ -2,7 +2,6 @@
 
 namespace UserBase\Client\Event;
 
-
 use Symfony\Contracts\EventDispatcher\Event;
 use UserBase\Client\Model\User;
 

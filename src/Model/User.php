@@ -31,6 +31,7 @@ final class User implements
      */
     private $accountNonLocked;
 
+    private $name;
     private $password;
     private $roles;
 
@@ -41,7 +42,7 @@ final class User implements
     private $accountUsers = array();
     private $policies = array();
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         if (empty($name)) {
             throw new \InvalidArgumentException('The name cannot be empty.');
@@ -55,6 +56,11 @@ final class User implements
         $this->accountNonLocked = true;
         $this->roles = array();
         $this->salt = 'KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324';
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->name;
     }
 
     public function getCreatedAt()
@@ -130,7 +136,7 @@ final class User implements
         return $this->getName();
     }
 
-    public function setUsername($username)
+    public function setUsername(string $username)
     {
         $this->name = $username;
         return $this;

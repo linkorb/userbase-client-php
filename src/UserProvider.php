@@ -32,7 +32,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
         $this->roleProvider = $roleProvider;
     }
 
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): UserInterface
     {
         return $this->loadUserByIdentifier((string) $username);
     }
@@ -64,7 +64,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
         return $user;
     }
 
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
@@ -77,7 +77,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
         return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return User::class === $class;
     }

@@ -37,7 +37,7 @@ final class User implements
 
     private $name;
     private $password = '';
-    private $roles;
+    private $roles = [];
     private $salt = '';
 
     private $createdAt;
@@ -58,7 +58,6 @@ final class User implements
         $this->accountNonExpired = true;
         $this->credentialsNonExpired = true;
         $this->accountNonLocked = true;
-        $this->roles = array();
         $this->salt = 'KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324';
     }
 
@@ -105,7 +104,7 @@ final class User implements
     /**
      * {@inheritdoc}
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         return $this->roles;
     }
@@ -135,7 +134,7 @@ final class User implements
     /**
      * {@inheritdoc}
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->getName();
     }

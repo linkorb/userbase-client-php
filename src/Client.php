@@ -329,10 +329,6 @@ class Client
     public function setAccountPicture($accountName, $filename)
     {
         return $this->uploadPhoto('/accounts/'.$accountName.'/setPicture', $filename);
-
-        $data = $this->getData('/accounts/'.$accountName.'/setPicture');
-
-        return $data;
     }
 
     public function addAccountUser($accountName, $userName, $isAdmin)

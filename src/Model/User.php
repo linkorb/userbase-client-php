@@ -4,12 +4,14 @@ namespace UserBase\Client\Model;
 
 use LinkORB\Contracts\UserbaseRole\RoleInterface;
 use RuntimeException;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 final class User implements
     AccountContainerInterface,
     BaseUserInterface,
     LegacyAdvancedUserInterface,
+    PasswordAuthenticatedUserInterface,
     PolicyContainerInterface,
     RoleInterface,
     UserInterface
@@ -32,7 +34,7 @@ final class User implements
     private $accountNonLocked;
 
     private $name;
-    private $password;
+    private $password = '';
     private $roles;
 
     private $createdAt;
@@ -49,7 +51,6 @@ final class User implements
         }
 
         $this->name = $name;
-        $this->password = null;
         $this->enabled = true;
         $this->accountNonExpired = true;
         $this->credentialsNonExpired = true;
@@ -109,12 +110,12 @@ final class User implements
     /**
      * {@inheritdoc}
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword($password)
+    public function setPassword(string $password)
     {
         $this->password = $password;
         return $this;

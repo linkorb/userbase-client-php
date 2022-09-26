@@ -190,8 +190,8 @@ class Account
 
     public function isAccountUser($userName)
     {
-        foreach ($this->accountUser as $accountUser) {
-            if ($this->accountUser->getUserName() == $userName) {
+        foreach ($this->accountUsers as $accountUser) {
+            if ($accountUser === $userName) {
                 return true;
             }
         }

@@ -4,6 +4,7 @@ namespace UserBase\Client\Model;
 
 use LinkORB\Contracts\UserbaseRole\RoleInterface;
 use RuntimeException;
+use Symfony\Component\Security\Core\User\LegacyPasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
@@ -11,6 +12,7 @@ final class User implements
     AccountContainerInterface,
     BaseUserInterface,
     LegacyAdvancedUserInterface,
+    LegacyPasswordAuthenticatedUserInterface,
     PasswordAuthenticatedUserInterface,
     PolicyContainerInterface,
     RoleInterface,
@@ -36,6 +38,7 @@ final class User implements
     private $name;
     private $password = '';
     private $roles;
+    private $salt = '';
 
     private $createdAt;
     private $lastSeenAt;
@@ -124,7 +127,7 @@ final class User implements
     /**
      * {@inheritdoc}
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return $this->salt;
     }

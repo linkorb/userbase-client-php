@@ -25,10 +25,6 @@
         "symfony/event-dispatcher-contracts": "^2.0 || ~3.0.0",
         "symfony/security-core": "^5.4"
     },
-    "require-dev": {
-        "linkorb/envoi": "^1.0",
-        "symfony/dotenv": "^5.4"
-    },
     "config": {
         "sort-packages": true
     },

@@ -1,41 +1,36 @@
 {
-  "name": "userbase/client",
-  "description": "UserBase PHP Client: Identity + Login + Signup Service",
-  "homepage": "http://www.github.com/userbase-project/userbase-client-php",
-  "keywords": [
-    "login",
-    "signup",
-    "user",
-    "account"
-  ],
-  "type": "library",
-  "authors": [
-    {
-      "name": "Joost Faassen",
-      "email": "j.faassen@linkorb.com",
-      "role": "Development"
+    "name": "userbase/client",
+    "description": "UserBase PHP Client: Identity + Login + Signup Service",
+    "homepage": "http://www.github.com/userbase-project/userbase-client-php",
+    "keywords": ["login", "signup", "user", "account"],
+    "type": "library",
+    "authors": [
+        {
+            "name": "Joost Faassen",
+            "email": "j.faassen@linkorb.com",
+            "role": "Development"
+        },
+        {
+            "name": "kaushik prajapati",
+            "email": "prajapatikaushik@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.2",
+        "ext-curl": "*",
+        "linkorb/userbase-role-contracts": "^2.0",
+        "psr/cache": "~1.0 || ^2.0 || ^3.0",
+        "symfony/cache": "^5.4 || ^6.0",
+        "symfony/event-dispatcher-contracts": "^2.0 || ^3.0.0",
+        "symfony/security-core": "^5.4 || ^6.0"
     },
-    {
-      "name": "kaushik prajapati",
-      "email": "prajapatikaushik@gmail.com",
-      "role": "Developer"
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "UserBase\\Client\\": "src/"
+        }
     }
-  ],
-  "require": {
-    "php": ">=8.0.2",
-    "ext-curl": "*",
-    "linkorb/userbase-role-contracts": "^2.0",
-    "psr/cache": "~1.0 || ^2.0 || ^3.0",
-    "symfony/cache": "^5.4 || ^6.0",
-    "symfony/event-dispatcher-contracts": "^2.0 || ^3.0.0",
-    "symfony/security-core": "^5.4 || ^6.0"
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "autoload": {
-    "psr-4": {
-      "UserBase\\Client\\": "src/"
-    }
-  }
 }

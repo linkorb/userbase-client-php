@@ -20,7 +20,7 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
     private $shouldRefresh;
     private $dispatcher;
 
-    public function __construct(Client $client, $shouldRefresh = true, EventDispatcherInterface $dispatcher = null)
+    public function __construct(Client $client, $shouldRefresh = true, EventDispatcherInterface|null $dispatcher = null)
     {
         $this->client = $client;
         $this->shouldRefresh = (bool) $shouldRefresh;

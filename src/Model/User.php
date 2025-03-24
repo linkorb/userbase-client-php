@@ -5,7 +5,6 @@ namespace UserBase\Client\Model;
 use LinkORB\Contracts\UserbaseRole\RoleInterface;
 use RuntimeException;
 use Symfony\Component\Security\Core\User\LegacyPasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 final class User implements
@@ -13,7 +12,6 @@ final class User implements
     BaseUserInterface,
     LegacyAdvancedUserInterface,
     LegacyPasswordAuthenticatedUserInterface,
-    PasswordAuthenticatedUserInterface,
     PolicyContainerInterface,
     RoleInterface,
     UserInterface

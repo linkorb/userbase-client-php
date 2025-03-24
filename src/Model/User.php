@@ -272,8 +272,8 @@ final class User implements
         return $this->policies;
     }
 
-    public function addRole($roleName)
+    public function addRole($role)
     {
-        $this->roles[] = $roleName;
+        $this->roles[] = $role;
     }
 }

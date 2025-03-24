@@ -1,7 +1,7 @@
 {
     "name": "userbase/client",
     "description": "UserBase PHP Client: Identity + Login + Signup Service",
-    "homepage": "http://www.github.com/userbase-project/userbase-client-php",
+    "homepage": "https://github.com/linkorb/userbase-client-php",
     "keywords": ["login", "signup", "user", "account"],
     "type": "library",
     "authors": [

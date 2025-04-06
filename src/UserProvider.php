@@ -4,6 +4,7 @@ namespace UserBase\Client;
 
 use LinkORB\Contracts\UserbaseRole\RoleManagerInterface;
 use LinkORB\Contracts\UserbaseRole\RoleProviderInterface;
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
@@ -15,28 +16,31 @@ use UserBase\Client\Model\User;
 
 class UserProvider implements UserProviderInterface, RoleManagerInterface
 {
-    private $client;
     private $roleProvider;
-    private $shouldRefresh;
-    private $dispatcher;
 
-    public function __construct(Client $client, $shouldRefresh = true, EventDispatcherInterface|null $dispatcher = null)
-    {
-        $this->client = $client;
-        $this->shouldRefresh = (bool) $shouldRefresh;
-        $this->dispatcher = $dispatcher;
+    public function __construct(
+        private readonly Client $client,
+        private readonly bool $shouldRefresh = true,
+        private readonly EventDispatcherInterface|null $dispatcher = null
+    ) {
     }
 
-    public function setRoleProvider(RoleProviderInterface $roleProvider)
+    public function setRoleProvider(RoleProviderInterface $roleProvider): void
     {
         $this->roleProvider = $roleProvider;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function loadUserByUsername($username): UserInterface
     {
         return $this->loadUserByIdentifier((string) $username);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         try {
@@ -64,6 +68,9 @@ class UserProvider implements UserProviderInterface, RoleManagerInterface
         return $user;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof User) {

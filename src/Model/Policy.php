@@ -5,7 +5,7 @@ namespace UserBase\Client\Model;
 class Policy
 {
     private $effect;
-    private $actions = array();
+    private array $actions = [];
     private $resource;
 
     public function getEffect()
@@ -13,7 +13,7 @@ class Policy
         return $this->effect;
     }
 
-    public function setEffect($effect)
+    public function setEffect($effect): static
     {
         $this->effect = $effect;
 
@@ -25,19 +25,19 @@ class Policy
         return $this->resource;
     }
 
-    public function setResource($resource)
+    public function setResource($resource): static
     {
         $this->resource = $resource;
 
         return $this;
     }
 
-    public function addAction($action)
+    public function addAction($action): true
     {
         return $this->actions[$action] = true;
     }
 
-    public function getActions()
+    public function getActions(): array
     {
         return $this->actions;
     }

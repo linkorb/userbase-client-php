@@ -31,7 +31,7 @@ class Account
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
 
@@ -47,7 +47,7 @@ class Account
         return $this->name;
     }
 
-    public function setDisplayName($displayName)
+    public function setDisplayName($displayName): static
     {
         $this->displayName = $displayName;
 
@@ -59,7 +59,7 @@ class Account
         return $this->about;
     }
 
-    public function setAbout($about)
+    public function setAbout($about): static
     {
         $this->about = $about;
 
@@ -71,7 +71,7 @@ class Account
         return $this->pictureUrl;
     }
 
-    public function setPictureUrl($pictureUrl)
+    public function setPictureUrl($pictureUrl): static
     {
         $this->pictureUrl = $pictureUrl;
 
@@ -83,7 +83,7 @@ class Account
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->email = $email;
 
@@ -95,7 +95,7 @@ class Account
         return $this->email_verified;
     }
 
-    public function setEmailVerified($email_verified)
+    public function setEmailVerified($email_verified): static
     {
         $this->email_verified = $email_verified;
 
@@ -107,7 +107,7 @@ class Account
         return $this->mobile;
     }
 
-    public function setMobile($mobile)
+    public function setMobile($mobile): static
     {
         $this->mobile = $mobile;
 
@@ -119,7 +119,7 @@ class Account
         return $this->mobile_verified;
     }
 
-    public function setMobileVerified($mobile_verified)
+    public function setMobileVerified($mobile_verified): static
     {
         $this->mobile_verified = $mobile_verified;
 
@@ -131,7 +131,7 @@ class Account
         return $this->status;
     }
 
-    public function setStatus($status)
+    public function setStatus($status): static
     {
         $this->status = $status;
 
@@ -143,7 +143,7 @@ class Account
         return $this->createdAt;
     }
 
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -155,7 +155,7 @@ class Account
         return $this->deletedAt;
     }
 
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt($deletedAt): static
     {
         $this->deletedAt = $deletedAt;
 
@@ -167,16 +167,16 @@ class Account
         return $this->accountType;
     }
 
-    public function setAccountType($accountType)
+    public function setAccountType($accountType): static
     {
         $this->accountType = $accountType;
 
         return $this;
     }
 
-    private $accountUsers = array();
+    private array $accountUsers = [];
 
-    public function addAccountUser(AccountUser $accountUser)
+    public function addAccountUser(AccountUser $accountUser): static
     {
         $this->accountUsers[] = $accountUser;
 
@@ -188,7 +188,7 @@ class Account
         return $this->accountUsers;
     }
 
-    public function isAccountUser($userName)
+    public function isAccountUser($userName): bool
     {
         foreach ($this->accountUsers as $accountUser) {
             if ($accountUser === $userName) {
@@ -199,9 +199,9 @@ class Account
         return false;
     }
 
-    private $accountEmails = array();
+    private array $accountEmails = [];
 
-    public function addAccountEmail(AccountEmail $accountEmail)
+    public function addAccountEmail(AccountEmail $accountEmail): static
     {
         $this->accountEmails[] = $accountEmail;
 
@@ -213,7 +213,7 @@ class Account
         return $this->accountEmails;
     }
 
-    public function hasVerifiedEmailDomain($emailDomain)
+    public function hasVerifiedEmailDomain($emailDomain): bool
     {
         if ('@' != $emailDomain[0]) {
             throw new InvalidArgumentException('Make sure the domain argument starts with @');
@@ -229,9 +229,9 @@ class Account
         return false;
     }
 
-    private $accountProperties = array();
+    private array $accountProperties = [];
 
-    public function addAccountProperty(AccountProperty $accountProperty)
+    public function addAccountProperty(AccountProperty $accountProperty): static
     {
         $this->accountProperties[$accountProperty->getName()] = $accountProperty;
 
@@ -248,7 +248,7 @@ class Account
         return $this->accountProperties[$name];
     }
 
-    public function hasAccountProperty($name)
+    public function hasAccountProperty($name): bool
     {
         return isset($this->accountProperties[$name]);
     }
@@ -261,7 +261,7 @@ class Account
         return $this->message;
     }
 
-    public function setMessage($message)
+    public function setMessage($message): static
     {
         $this->message = $message;
 
@@ -273,7 +273,7 @@ class Account
         return $this->expireAt;
     }
 
-    public function setExpireAt($expireAt)
+    public function setExpireAt($expireAt): static
     {
         $this->expireAt = $expireAt;
 
@@ -285,7 +285,7 @@ class Account
         return $this->url;
     }
 
-    public function setUrl($url)
+    public function setUrl($url): static
     {
         $this->url = $url;
 

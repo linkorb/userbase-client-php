@@ -3,6 +3,7 @@
 namespace UserBase\Client;
 
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\PasswordHasher\Hasher\MessageDigestPasswordHasher;
@@ -24,16 +25,20 @@ if (!function_exists('curl_file_create')) {
 
 class Client
 {
-    protected $baseUrl;
-    protected $username;
-    protected $password;
-    protected $partition;
+    protected string $baseUrl;
+    protected mixed $username;
+    protected mixed $password;
+    protected mixed $partition;
     protected $timeDataCollector = null;
-    protected $cache;
-    protected $cacheDuration;
+    protected CacheItemPoolInterface $cache;
+    protected int $cacheDuration;
 
-    public function __construct($url, $username = null, $password = null, $partition = 'dev')
-    {
+    public function __construct(
+        string $url,
+        ?string $username = null,
+        ?string $password = null,
+        string $partition = 'dev'
+    ) {
         $parts = parse_url($url);
 
         if (isset($parts['user']) && isset($parts['pass'])) {
@@ -57,7 +62,7 @@ class Client
         $this->cache = new ArrayAdapter();
     }
 
-    private function parse_dsn(array $parts)
+    private function parse_dsn(array $parts): void
     {
         $this->username = $parts['user'];
         $this->password = $parts['pass'];
@@ -76,20 +81,20 @@ class Client
         $this->timeDataCollector = $timeDataCollector;
     }
 
-    public function setCache(CacheItemPoolInterface $cache, $cacheDuration = 60)
+    public function setCache(CacheItemPoolInterface $cache, int $cacheDuration = 60): void
     {
         $this->cache = $cache;
         $this->cacheDuration = $cacheDuration;
     }
 
-    private function getStatusCode($ch)
+    private function getStatusCode($ch): int
     {
         $info = curl_getinfo($ch);
 
         return (int) $info['http_code'];
     }
 
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
@@ -104,7 +109,7 @@ class Client
         return $this->username;
     }
 
-    public function getUsersWithDetails()
+    public function getUsersWithDetails(): array
     {
         $data = $this->getData('/users?details');
         $users = array();
@@ -116,7 +121,7 @@ class Client
         return $users;
     }
 
-    protected function itemToUser($data)
+    protected function itemToUser($data): User
     {
         $user = new User($data['username']);
         $user->setUsername($data['username']);
@@ -162,7 +167,7 @@ class Client
         return $user;
     }
 
-    protected function itemToAccount($data)
+    protected function itemToAccount(array $data): Account
     {
         $account = new Account($data['name']);
         $account->setDisplayName($data['display_name']);
@@ -222,7 +227,10 @@ class Client
         return $account;
     }
 
-    public function getUserByUsername($username)
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getUserByUsername(string $username): User
     {
         $cacheKey = 'user.'.$username.'.data';
         $cacheKey = str_replace('@', '%', $cacheKey);
@@ -241,23 +249,20 @@ class Client
         }
         $data = $dataCache->get();
 
-        $user = $this->itemToUser($data);
-
-        return $user;
+        return $this->itemToUser($data);
     }
 
-    public function getAccountByName($name)
+    public function getAccountByName($name): false|Account
     {
         $data = $this->getData('/accounts/'.$name);
         if (!isset($data['name'])) {
             return false;
         }
-        $account = $this->itemToAccount($data);
 
-        return $account;
+        return $this->itemToAccount($data);
     }
 
-    public function getAccountsWithDetails()
+    public function getAccountsWithDetails(): array
     {
         $data = $this->getData('/accounts?details');
         $users = array();
@@ -322,9 +327,7 @@ class Client
 
     public function setAccountProperty($accountName, $propertyName, $propertyValue)
     {
-        $data = $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
-
-        return $data;
+        return $this->getData('/accounts/'.$accountName.'/setProperty/'.$propertyName.'/'.$propertyValue);
     }
 
     public function setAccountPicture($accountName, $filename)
@@ -332,7 +335,7 @@ class Client
         return $this->uploadPhoto('/accounts/'.$accountName.'/setPicture', $filename);
     }
 
-    public function addAccountUser($accountName, $userName, $isAdmin)
+    public function addAccountUser(string $accountName, string $userName, $isAdmin): true
     {
         $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);
         if ('ok' != $data['status']) {
@@ -349,7 +352,7 @@ class Client
         return $data;
     }
 
-    public function createAccount($accountName, $accountType)
+    public function createAccount(string $accountName, $accountType): true
     {
         $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode($accountType));
         if (isset($data['error'])) {
@@ -359,7 +362,7 @@ class Client
         return true;
     }
 
-    public function updateAccount($accountName, $properties)
+    public function updateAccount(string $accountName, array $properties)
     {
         $url = '/accounts/'.$accountName.'/update?x=1';
         foreach ($properties as $key => $value) {
@@ -371,49 +374,49 @@ class Client
         return $data;
     }
 
-    public function createNotification($accountName, $jsonData = null)
+    public function createNotification(string $accountName, $jsonData = null)
     {
         $data = $this->getData('/accounts/'.$accountName.'/notifications/add', $jsonData);
 
         return $data;
     }
 
-    public function getNotifications($accountName, $jsonData)
+    public function getNotifications(string $accountName, $jsonData)
     {
         $data = $this->getData('/accounts/'.$accountName.'/notifications', $jsonData);
 
         return $data;
     }
 
-    public function setAccountPrimaryEmail($accountName, $email)
+    public function setAccountPrimaryEmail(string $accountName, string $email)
     {
         $data = $this->getData('/accounts/'.$accountName.'/defaultEmail/'.$email);
 
         return $data;
     }
 
-    public function setAccountEmailVerified($accountName, $email)
+    public function setAccountEmailVerified(string $accountName, string $email)
     {
         $data = $this->getData('/accounts/'.$accountName.'/verifyEmail/'.$email);
 
         return $data;
     }
 
-    public function addAccountEmail($accountName, $email)
+    public function addAccountEmail(string $accountName, string $email)
     {
         $data = $this->getData('/accounts/'.$accountName.'/addEmail/'.$email);
 
         return $data;
     }
 
-    public function invite($accountName, $displayName, $email, $payload = null)
+    public function invite(string $accountName, string $displayName, string $email, $payload = null)
     {
         $data = $this->getData('/invites/create/'.$accountName.'/'.rawurlencode($displayName).'/'.rawurlencode($email).'?payload='.rawurlencode(base64_encode($payload)));
 
         return $data;
     }
 
-    public function sendPushMessage($username, $message, $data = [])
+    public function sendPushMessage(string $username, string $message, $data = [])
     {
         $data = $this->getData('/push?username='.$username.'&message='.rawurlencode($message), json_encode($data));
 
@@ -422,7 +425,6 @@ class Client
 
     public function uploadPhoto($uri, $file)
     {
-        $fields = array();
         $files['file'] = base64_decode($file);
         $boundary = uniqid();
         $delimiter = '-------------'.$boundary;

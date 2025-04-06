@@ -13,7 +13,7 @@ class AccountProperty
         return $this->accountName;
     }
 
-    public function setAccountName($accountName)
+    public function setAccountName($accountName): static
     {
         $this->accountName = $accountName;
 
@@ -25,7 +25,7 @@ class AccountProperty
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
 
@@ -37,7 +37,7 @@ class AccountProperty
         return $this->value;
     }
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         $this->value = $value;
 

@@ -19,31 +19,31 @@ final class User implements
     /**
      * @deprecated
      */
-    private $enabled;
+    private bool $enabled;
     /**
      * @deprecated
      */
-    private $accountNonExpired;
+    private bool $accountNonExpired;
     /**
      * @deprecated
      */
-    private $credentialsNonExpired;
+    private bool $credentialsNonExpired;
     /**
      * @deprecated
      */
-    private $accountNonLocked;
+    private bool $accountNonLocked;
 
     private $name;
-    private $password = '';
-    private $roles = [];
-    private $salt = '';
+    private string $password = '';
+    private array $roles = [];
+    private string $salt = '';
 
     private $createdAt;
     private $lastSeenAt;
     private $deletedAt;
 
-    private $accountUsers = array();
-    private $policies = array();
+    private array $accountUsers = [];
+    private array $policies = [];
 
     public function __construct(string $name)
     {
@@ -69,7 +69,7 @@ final class User implements
         return $this->createdAt;
     }
 
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -80,7 +80,7 @@ final class User implements
         return $this->deletedAt;
     }
 
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt($deletedAt): static
     {
         $this->deletedAt = $deletedAt;
         return $this;
@@ -91,7 +91,7 @@ final class User implements
         return $this->lastSeenAt;
     }
 
-    public function setLastSeenAt($lastSeenAt)
+    public function setLastSeenAt($lastSeenAt): static
     {
         if ($this->lastSeenAt > 0) {
             $this->lastSeenAt = $lastSeenAt;
@@ -115,7 +115,7 @@ final class User implements
         return $this->password;
     }
 
-    public function setPassword(string $password)
+    public function setPassword(string $password): static
     {
         $this->password = $password;
         return $this;
@@ -137,13 +137,13 @@ final class User implements
         return $this->getName();
     }
 
-    public function setUsername(string $username)
+    public function setUsername(string $username): static
     {
         $this->name = $username;
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -157,7 +157,7 @@ final class User implements
     /**
      * @deprecated
      */
-    public function isAccountNonExpired()
+    public function isAccountNonExpired(): bool
     {
         return $this->accountNonExpired;
     }
@@ -165,7 +165,7 @@ final class User implements
     /**
      * @deprecated
      */
-    public function isAccountNonLocked()
+    public function isAccountNonLocked(): bool
     {
         return $this->accountNonLocked;
     }
@@ -173,7 +173,7 @@ final class User implements
     /**
      * @deprecated
      */
-    public function setAccountNonLocked($accountNonLocked)
+    public function setAccountNonLocked($accountNonLocked): static
     {
         $this->accountNonLocked = $accountNonLocked;
 
@@ -183,7 +183,7 @@ final class User implements
     /**
      * @deprecated
      */
-    public function isCredentialsNonExpired()
+    public function isCredentialsNonExpired(): bool
     {
         return $this->credentialsNonExpired;
     }
@@ -191,7 +191,7 @@ final class User implements
     /**
      * @deprecated
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
@@ -199,7 +199,7 @@ final class User implements
     /**
      * @deprecated
      */
-    public function setEnabled($enabled)
+    public function setEnabled($enabled): static
     {
         $this->enabled = $enabled;
         return $this;
@@ -222,17 +222,17 @@ final class User implements
         return $this->getUserAccount()->getPictureUrl($size);
     }
 
-    public function addAccountUser(AccountUser $accountUser)
+    public function addAccountUser(AccountUser $accountUser): void
     {
         $this->accountUsers[] = $accountUser;
     }
 
-    public function getAccountUsers()
+    public function getAccountUsers(): array
     {
         return $this->accountUsers;
     }
 
-    public function getAccounts()
+    public function getAccounts(): array
     {
         $accounts = array();
         foreach ($this->accountUsers as $accountUser) {
@@ -251,7 +251,7 @@ final class User implements
         throw new RuntimeException('This user has no user-account: '.$this->getName());
     }
 
-    public function getAccountsByType($type)
+    public function getAccountsByType($type): array
     {
         $res = array();
         foreach ($this->getAccounts() as $account) {
@@ -262,17 +262,17 @@ final class User implements
         return $res;
     }
 
-    public function addPolicy(Policy $policy)
+    public function addPolicy(Policy $policy): void
     {
         $this->policies[] = $policy;
     }
 
-    public function getPolicies()
+    public function getPolicies(): array
     {
         return $this->policies;
     }
 
-    public function addRole($role)
+    public function addRole($role): void
     {
         $this->roles[] = $role;
     }

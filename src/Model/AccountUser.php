@@ -13,7 +13,7 @@ class AccountUser
         return $this->accountName;
     }
 
-    public function setAccountName($accountName)
+    public function setAccountName($accountName): static
     {
         $this->accountName = $accountName;
 
@@ -25,19 +25,19 @@ class AccountUser
         return $this->userName;
     }
 
-    public function setUserName($userName)
+    public function setUserName($userName): static
     {
         $this->userName = $userName;
 
         return $this;
     }
 
-    public function isOwner()
+    public function isOwner(): bool
     {
         return true == $this->isOwner;
     }
 
-    public function setIsOwner($isOwner)
+    public function setIsOwner($isOwner): static
     {
         if ($isOwner) {
             $this->isOwner = true;
@@ -48,14 +48,14 @@ class AccountUser
         return $this;
     }
 
-    private $account;
+    private Account $account;
 
-    public function getAccount()
+    public function getAccount(): Account
     {
         return $this->account;
     }
 
-    public function setAccount(Account $account)
+    public function setAccount(Account $account): static
     {
         $this->account = $account;
 
@@ -69,7 +69,7 @@ class AccountUser
         return $this->user;
     }
 
-    public function setUser($user)
+    public function setUser($user): static
     {
         $this->user = $user;
 

@@ -14,7 +14,7 @@ class AccountEmail
         return $this->accountName;
     }
 
-    public function setAccountName($accountName)
+    public function setAccountName($accountName): static
     {
         $this->accountName = $accountName;
 
@@ -26,7 +26,7 @@ class AccountEmail
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->email = $email;
 
@@ -38,7 +38,7 @@ class AccountEmail
         return $this->verified_at;
     }
 
-    public function setVerifiedAt($verified_at)
+    public function setVerifiedAt($verified_at): static
     {
         $this->verified_at = $verified_at;
 
@@ -50,7 +50,7 @@ class AccountEmail
         return $this->primary;
     }
 
-    public function setPrimary($primary)
+    public function setPrimary($primary): static
     {
         $this->primary = $primary;
 

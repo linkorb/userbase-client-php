@@ -1,3 +1,8 @@
+> [!WARNING]
+> This is a read-only repository used to release the subtree. Any issues and pull requests should be forwarded to the
+> upstream [Nebula repository](https://github.com/linkorb/nebula).
+
+
 Userbase client for PHP
 =======================
 

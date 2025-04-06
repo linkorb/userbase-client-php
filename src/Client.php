@@ -5,7 +5,7 @@ namespace UserBase\Client;
 use Psr\Cache\CacheItemPoolInterface;
 use RuntimeException;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\PasswordHasher\Hasher\MessageDigestPasswordHasher;
 use UserBase\Client\Model\Account;
 use UserBase\Client\Model\AccountEmail;
 use UserBase\Client\Model\AccountProperty;
@@ -306,17 +306,18 @@ class Client
         return $data;
     }
 
-    public function checkCredentials($username, $password)
+    public function checkCredentials(string $username, string $password): bool
     {
         try {
             $user = $this->getUserByUsername($username);
         } catch (\Exception $e) {
             return false;
+        } catch (InvalidArgumentException $e) {
+            return false;
         }
-        $encoder = new MessageDigestPasswordEncoder();
-        $valid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
 
-        return $valid;
+        $hasher = new MessageDigestPasswordHasher();
+        return $hasher->verify($user->getPassword(), $password, $user->getSalt());
     }
 
     public function setAccountProperty($accountName, $propertyName, $propertyValue)

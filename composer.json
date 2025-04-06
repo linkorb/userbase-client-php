@@ -17,13 +17,13 @@
         }
     ],
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.2",
         "ext-curl": "*",
         "linkorb/userbase-role-contracts": "^2.0",
-        "psr/cache": "~1.0 || ^2.0 || ^3.0",
-        "symfony/cache": "^5.4 || ^6.0 || ^7.0",
+        "psr/cache": "^3.0",
+        "symfony/cache": "^5.4 || ^6.4 || ^7.2",
         "symfony/event-dispatcher-contracts": "^2.0 || ^3.0.0",
-        "symfony/security-core": "^5.4 || ^6.0 || ^7.0"
+        "symfony/security-core": "^5.4 || ^6.4 || ^7.2"
     },
     "config": {
         "sort-packages": true

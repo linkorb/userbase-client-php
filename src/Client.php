@@ -31,7 +31,7 @@ class Client
     protected mixed $partition;
     protected $timeDataCollector = null;
     protected CacheItemPoolInterface $cache;
-    protected int $cacheDuration;
+    protected int $cacheDuration = 60;
 
     public function __construct(
         string $url,

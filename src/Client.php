@@ -18,7 +18,7 @@ if (!function_exists('curl_file_create')) {
     function curl_file_create($filename, $mimetype = '', $postname = '')
     {
         return "@$filename;filename="
-            .($postname ?: basename($filename))
+            .($postname ?: basename((string) $filename))
             .($mimetype ? ";type=$mimetype" : '');
     }
 }
@@ -28,7 +28,6 @@ class Client
     protected string $baseUrl;
     protected mixed $username;
     protected mixed $password;
-    protected mixed $partition;
     protected $timeDataCollector = null;
     protected CacheItemPoolInterface $cache;
     protected int $cacheDuration = 60;
@@ -37,7 +36,7 @@ class Client
         string $url,
         ?string $username = null,
         ?string $password = null,
-        string $partition = 'dev'
+        protected mixed $partition = 'dev'
     ) {
         $parts = parse_url($url);
 
@@ -57,8 +56,6 @@ class Client
         if ($password) {
             $this->password = $password;
         }
-
-        $this->partition = $partition;
         $this->cache = new ArrayAdapter();
     }
 
@@ -112,7 +109,7 @@ class Client
     public function getUsersWithDetails(): array
     {
         $data = $this->getData('/users?details');
-        $users = array();
+        $users = [];
         foreach ($data['items'] as $item) {
             $user = $this->itemToUser($item);
             $users[] = $user;
@@ -265,7 +262,7 @@ class Client
     public function getAccountsWithDetails(): array
     {
         $data = $this->getData('/accounts?details');
-        $users = array();
+        $users = [];
         foreach ($data['items'] as $item) {
             $user = $this->itemToAccount($item);
             $users[] = $user;
@@ -287,7 +284,7 @@ class Client
         if ($jsonData) {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         }
 
         $json = curl_exec($ch);
@@ -315,9 +312,7 @@ class Client
     {
         try {
             $user = $this->getUserByUsername($username);
-        } catch (\Exception $e) {
-            return false;
-        } catch (InvalidArgumentException $e) {
+        } catch (\Exception|InvalidArgumentException) {
             return false;
         }
 
@@ -347,14 +342,14 @@ class Client
 
     public function addEvent($accountName, $eventName, $data)
     {
-        $data = $this->getData('/accounts/'.$accountName.'/addEvent/'.urlencode($eventName).'?'.$data);
+        $data = $this->getData('/accounts/'.$accountName.'/addEvent/'.urlencode((string) $eventName).'?'.$data);
 
         return $data;
     }
 
     public function createAccount(string $accountName, $accountType): true
     {
-        $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode($accountType));
+        $data = $this->getData('/accounts/create/'.urlencode($accountName).'/'.urlencode((string) $accountType));
         if (isset($data['error'])) {
             throw new RuntimeException($data['error']['code'].': '.$data['error']['message']);
         }
@@ -366,7 +361,7 @@ class Client
     {
         $url = '/accounts/'.$accountName.'/update?x=1';
         foreach ($properties as $key => $value) {
-            $url .= '&'.$key.'='.urlencode($value);
+            $url .= '&'.$key.'='.urlencode((string) $value);
         }
         //echo $url; exit();
         $data = $this->getData($url);
@@ -411,7 +406,7 @@ class Client
 
     public function invite(string $accountName, string $displayName, string $email, $payload = null)
     {
-        $data = $this->getData('/invites/create/'.$accountName.'/'.rawurlencode($displayName).'/'.rawurlencode($email).'?payload='.rawurlencode(base64_encode($payload)));
+        $data = $this->getData('/invites/create/'.$accountName.'/'.rawurlencode($displayName).'/'.rawurlencode($email).'?payload='.rawurlencode(base64_encode((string) $payload)));
 
         return $data;
     }
@@ -425,7 +420,7 @@ class Client
 
     public function uploadPhoto($uri, $file)
     {
-        $files['file'] = base64_decode($file);
+        $files['file'] = base64_decode((string) $file);
         $boundary = uniqid();
         $delimiter = '-------------'.$boundary;
 
@@ -433,7 +428,7 @@ class Client
 
         $url = $this->baseUrl.$uri;
         $ch = curl_init();
-        curl_setopt_array($ch, array(
+        curl_setopt_array($ch, [
           CURLOPT_USERPWD => $this->username.':'.$this->password,
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => 1,
@@ -442,11 +437,11 @@ class Client
           CURLOPT_CUSTOMREQUEST => 'POST',
           CURLOPT_POST => 1,
           CURLOPT_POSTFIELDS => $postData,
-          CURLOPT_HTTPHEADER => array(
+          CURLOPT_HTTPHEADER => [
             'Content-Type: multipart/form-data; boundary='.$delimiter,
             'Content-Length: '.strlen($postData),
-          ),
-        ));
+          ],
+        ]);
 
         $json = curl_exec($ch);
         $info = curl_getinfo($ch);

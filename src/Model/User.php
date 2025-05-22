@@ -23,11 +23,11 @@ final class User implements
     /**
      * @deprecated
      */
-    private bool $accountNonExpired;
+    private readonly bool $accountNonExpired;
     /**
      * @deprecated
      */
-    private bool $credentialsNonExpired;
+    private readonly bool $credentialsNonExpired;
     /**
      * @deprecated
      */
@@ -234,7 +234,7 @@ final class User implements
 
     public function getAccounts(): array
     {
-        $accounts = array();
+        $accounts = [];
         foreach ($this->accountUsers as $accountUser) {
             $accounts[] = $accountUser->getAccount();
         }
@@ -253,7 +253,7 @@ final class User implements
 
     public function getAccountsByType($type): array
     {
-        $res = array();
+        $res = [];
         foreach ($this->getAccounts() as $account) {
             if ($account->getAccountType() == $type) {
                 $res[] = $account;

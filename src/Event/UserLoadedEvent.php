@@ -9,11 +9,8 @@ class UserLoadedEvent extends Event
 {
     public const NAME = 'userbase.user_loaded';
 
-    protected User $user;
-
-    public function __construct(User $user)
+    public function __construct(protected User $user)
     {
-        $this->user = $user;
     }
 
     public function getUser(): User

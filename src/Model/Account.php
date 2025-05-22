@@ -6,7 +6,6 @@ use InvalidArgumentException;
 
 class Account
 {
-    private $name;
     private $displayName;
     private $about;
     private $pictureUrl;
@@ -21,9 +20,8 @@ class Account
     private $accountType;
     private $url;
 
-    public function __construct($name)
+    public function __construct(private $name)
     {
-        $this->name = $name;
     }
 
     public function getName()
@@ -220,7 +218,7 @@ class Account
         }
         foreach ($this->accountEmails as $accountEmail) {
             if ($accountEmail->getVerifiedAt() > 0) {
-                if (substr($accountEmail->getEmail(), -strlen($emailDomain)) == $emailDomain) {
+                if (str_ends_with((string) $accountEmail->getEmail(), (string) $emailDomain)) {
                     return true;
                 }
             }

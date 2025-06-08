@@ -188,13 +188,7 @@ class Account
 
     public function isAccountUser($userName): bool
     {
-        foreach ($this->accountUsers as $accountUser) {
-            if ($accountUser === $userName) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($userName, $this->accountUsers, true);
     }
 
     private array $accountEmails = [];

@@ -330,6 +330,11 @@ class Client
         return $this->uploadPhoto('/accounts/'.$accountName.'/setPicture', $filename);
     }
 
+    public function deleteAccountPicture(string $accountName): array
+    {
+        return $this->getData('/accounts/' . $accountName . '/deletePicture');
+    }
+
     public function addAccountUser(string $accountName, string $userName, $isAdmin): true
     {
         $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);

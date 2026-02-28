@@ -333,7 +333,7 @@ class Client
         return $this->uploadPhoto('/accounts/'.$accountName.'/setPicture', $filename);
     }
 
-    public function deleteAccountPicture(string $accountName): array
+    public function deleteAccountPicture(string $accountName)
     {
         return $this->getData('/accounts/' . $accountName . '/deletePicture');
     }

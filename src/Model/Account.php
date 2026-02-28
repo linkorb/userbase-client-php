@@ -19,6 +19,7 @@ class Account
     private $deletedAt;
     private $accountType;
     private $url;
+    private bool $hasPicture = false;
 
     public function __construct(private $name)
     {
@@ -280,6 +281,18 @@ class Account
     public function setUrl($url): static
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getHasPicture(): bool
+    {
+        return $this->hasPicture;
+    }
+
+    public function setHasPicture(bool $hasPicture): static
+    {
+        $this->hasPicture = $hasPicture;
 
         return $this;
     }

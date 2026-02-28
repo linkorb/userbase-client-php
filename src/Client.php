@@ -185,6 +185,9 @@ class Client
         $account->setPictureUrl($data['picture_url']);
         $account->setCreatedAt($data['created_at']);
         $account->setDeletedAt($data['deleted_at']);
+        if (isset($data['has_picture'])) {
+            $account->setHasPicture((bool) $data['has_picture']);
+        }
         $account->setMessage($data['message']);
         $account->setExpireAt($data['expire_at']);
 

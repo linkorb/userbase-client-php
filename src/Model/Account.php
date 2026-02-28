@@ -285,7 +285,7 @@ class Account
         return $this;
     }
 
-    public function getHasPicture(): bool
+    public function hasPicture(): bool
     {
         return $this->hasPicture;
     }

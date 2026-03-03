@@ -61,8 +61,8 @@ class Client
 
     private function parse_dsn(array $parts): void
     {
-        $this->username = $parts['user'];
-        $this->password = $parts['pass'];
+        $this->username = (string) $parts['user'];
+        $this->password = (string) $parts['pass'];
 
         $this->baseUrl = "{$parts['scheme']}://{$parts['host']}";
         if (isset($parts['port'])) {

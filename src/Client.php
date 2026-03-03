@@ -338,6 +338,11 @@ class Client
         return $this->getData('/accounts/' . $accountName . '/deletePicture');
     }
 
+    public function deleteAccountPersonalData(string $accountName)
+    {
+        return $this->getData('/accounts/' . $accountName . '/deletePersonalData');
+    }
+
     public function addAccountUser(string $accountName, string $userName, $isAdmin): true
     {
         $data = $this->getData('/accounts/'.$accountName.'/addUser/'.$userName.'/'.$isAdmin);

@@ -26,8 +26,8 @@ if (!function_exists('curl_file_create')) {
 class Client
 {
     protected string $baseUrl;
-    protected mixed $username;
-    protected mixed $password;
+    protected ?string $username = null;
+    protected ?string $password = null;
     protected $timeDataCollector = null;
     protected CacheItemPoolInterface $cache;
     protected int $cacheDuration = 60;
@@ -282,7 +282,9 @@ class Client
         $url = $this->baseUrl.$uri;
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->username.':'.$this->password);
+        if ($this->username !== null && $this->username !== '' && $this->password !== null && $this->password !== '') {
+            curl_setopt($ch, CURLOPT_USERPWD, $this->username.':'.$this->password);
+        }
 
         if ($jsonData) {
             curl_setopt($ch, CURLOPT_POST, true);
@@ -441,8 +443,7 @@ class Client
 
         $url = $this->baseUrl.$uri;
         $ch = curl_init();
-        curl_setopt_array($ch, [
-          CURLOPT_USERPWD => $this->username.':'.$this->password,
+        $uploadOptions = [
           CURLOPT_URL => $url,
           CURLOPT_RETURNTRANSFER => 1,
           CURLOPT_MAXREDIRS => 10,
@@ -454,7 +455,11 @@ class Client
             'Content-Type: multipart/form-data; boundary='.$delimiter,
             'Content-Length: '.strlen($postData),
           ],
-        ]);
+        ];
+        if ($this->username !== null && $this->username !== '' && $this->password !== null && $this->password !== '') {
+            $uploadOptions[CURLOPT_USERPWD] = $this->username.':'.$this->password;
+        }
+        curl_setopt_array($ch, $uploadOptions);
 
         $json = curl_exec($ch);
         $info = curl_getinfo($ch);

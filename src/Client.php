@@ -436,7 +436,7 @@ class Client
     public function uploadPhoto($uri, $file)
     {
         $files['file'] = base64_decode((string) $file);
-        $boundary = uniqid();
+        $boundary = substr(bin2hex(random_bytes(15)), 0, 13);
         $delimiter = '-------------'.$boundary;
 
         $postData = $this->buildDataFiles($boundary, $files);
